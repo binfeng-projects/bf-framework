@@ -1,0 +1,567 @@
+server:
+    port: 8080
+    context-path: /
+management:
+    endpoint:
+        health:
+            show-details: always
+    endpoints:
+        #enabled-by-default: true #暴露所有端点信息
+        web:
+            base-path: /
+            exposure:
+                exclude: shutdown
+                include: '*'
+            path-mapping:
+                prometheus: prometheus
+            cors:
+                allowed-origins:
+                    - "*"
+    server:
+        port: 7070
+    metrics:
+        tags:
+            application: ${spring.application.name}
+            service: "spring-boot"
+spring:
+    # 排除sql init的autoconfig。没啥用，单数据源下还会有很多冲突。可以用Flyway
+    sql:
+        init:
+            mode: never
+#    boot:
+#        enableautoconfiguration: false
+    autoconfigure:
+        #多数据源情况下，spring默认配置都是没有用的,还会引起一些冲突
+        exclude:
+        - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+        - org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration
+        - org.springframework.boot.autoconfigure.jdbc.JdbcClientAutoConfiguration
+        - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
+        - org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration
+        - org.springframework.boot.autoconfigure.jooq.JooqAutoConfiguration
+        - org.springframework.boot.autoconfigure.batch.BatchAutoConfiguration
+        - org.springframework.boot.autoconfigure.flyway.FlywayAutoConfiguration
+        - org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration
+        - org.springframework.boot.autoconfigure.quartz.QuartzAutoConfiguration
+        - org.springframework.boot.autoconfigure.session.SessionAutoConfiguration
+        - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+        - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+        - org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration
+        - org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchClientAutoConfiguration
+        - org.springframework.boot.autoconfigure.elasticsearch.ReactiveElasticsearchClientAutoConfiguration
+        - org.springframework.boot.autoconfigure.data.elasticsearch.ElasticsearchDataAutoConfiguration
+        - org.springframework.yarn.boot.YarnClientAutoConfiguration
+        - org.springframework.yarn.boot.YarnContainerAutoConfiguration
+        - org.springframework.yarn.boot.YarnAppmasterAutoConfiguration
+        - org.springframework.yarn.boot.ContainerClusterAppmasterAutoConfiguration
+    servlet:
+        multipart:
+            #设置单个文件的大小
+            max-file-size: 1000MB
+            #单次请求的文件的总大小
+            max-request-size: 1000MB
+    main:
+        allow-bean-definition-overriding: true
+        banner-mode: log
+logging:
+    file:
+        path: /opt/logs/${spring.application.name}
+        max-size: 1GB
+        max-history: 30
+        total-size-cap: 20GB
+    level:
+        root: INFO
+#    config: 'classpath:logback-spring.xml'
+#    pattern:
+#        file: '%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}'
+#        console: '%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}'
+#        dateformat: yyyy-MM-dd HH:mm:ss.SSS
+#        rolling-file-name: '${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz'
+#        level: '%5p'
+bf:
+    #apollo: #只有在应用配了才有效，因为公共配置还没加载到
+        #meta: http://127.0.0.1:8080
+        #common-namespace: "02.xxx,02.xxx2,02.xxx3"
+    #consul:
+        #host: http://127.0.0.1:8500
+    xxl:
+        #执行器通讯TOKEN [选填]：非空时启用；
+        #accessToken:
+        admin:
+            #    调度中心部署跟地址 [选填]：如调度中心集群部署存在多个地址则用逗号分隔。执行器将会使用该地址进行"执行器心跳注册"和"任务结果回调"；为空则关闭自动注册；
+            addresses: http://127.0.0.1:9090
+        executor:
+            ### 执行器AppName [选填]：执行器心跳注册分组依据；为空则关闭自动注册
+            appname: ${spring.application.name}-${spring.profiles.active}
+            ### 执行器日志文件保存天数 [选填] ： 过期日志自动清理, 限制值大于等于3时生效; 否则, 如-1, 关闭自动清理功能；
+            logretentiondays: 30
+            ### 执行器注册 [选填]：优先使用该配置作为注册地址，为空时使用内嵌服务 ”IP:PORT“ 作为注册地址。从而更灵活的支持容器类型执行器动态IP和动态映射端口问题。
+            #address:
+            ### 执行器IP [选填]：默认为空表示自动获取IP，多网卡时可手动设置指定IP，该IP不会绑定Host仅作为通讯实用；地址信息用于 "执行器注册" 和 "调度中心请求并触发任务"；
+            #ip:
+            ### 执行器端口号 [选填]：小于等于0则自动获取；默认端口为9999，单机部署多个执行器时，注意要配置不同执行器端口；
+            port: 9999
+            logpath: ${logging.file.path}/xxl-job
+    cache: #本地cache CaffeineSpec
+        enabled: 'half-min,min,half-hour,hour,two-hour,day'
+        default:
+            url: local #无意义，纯粹为了绕过检测
+            expire-after-write: 300  #默认ttl, 本地默认换成5分钟
+            initial-capacity: 500 #初始容量
+            maximum-size: 5000 #最大容量
+            spec: #CaffeineSpec,逗号分割，遵循CaffeineSpec规范
+        half-min: #半分钟
+            expire-after-write: 30  #单位秒
+            initial-capacity: 500 #初始容量，不填，则继承default
+            maximum-size: 5000 #最大容量,不填，则继承default
+            spec: #CaffeineSpec,逗号分割，遵循CaffeineSpec规范
+        min: #一分钟
+            expire-after-write: 60
+        half-hour: #半小时
+            expire-after-write: 1800
+        hour: #一小时
+            expire-after-write: 3600
+        two-hour: #两小时
+            expire-after-write: 7200
+        day: #一天
+            expire-after-write: 86400
+    datasource:
+        #enabled: 'ds1,ds2'
+        default:
+            #type不填，默认com.zaxxer.hikari.HikariDataSource,建议不填
+            #type: com.zaxxer.hikari.HikariDataSource
+            #driver-class-name不填，默认com.mysql.cj.jdbc.Driver,建议不填
+            #driver-class-name: com.mysql.jdbc.Driver
+        #到Ip端口为止
+            #url: jdbc:mysql://127.0.0.1:3306/db1?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true&amp;rewriteBatchedStatements=true
+            username: user
+            password: password
+            connection-timeout: 30000        # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 默认:30秒
+            minimum-idle: 30                  # 最小连接数
+            maximum-pool-size: 300            # 最大连接数
+            #pool-name: DateSourceHikariCP     # 连接池名字
+            #auto-commit: true                # 事务自动提交
+            idle-timeout: 60000             # 连接超时的最大时长（毫秒），超时则被释放（retired），默认:10分钟
+            max-lifetime: 1800000             # 连接的生命时长（毫秒），超时而且没被使用则被释放（retired），默认:30分钟 1800000ms
+            connection-test-query: SELECT 1
+    redis:
+#        enabled: 'redis1,redis2'
+        default:
+#            如果配置了就会忽略host和port
+#            url: '127.0.0.1:6379'
+#            host:
+#            username:
+#            password:
+            port: 6379
+            database: 0  # Redis 数据库编号
+            timeout: 10000
+            connect-timeout: 30000
+            type: lettuce  #可选值 lettuce,jedis
+            use-redisson: true #是否启用redisson
+            pool:
+                max-active: 100
+                max-idle: 20
+                min-idle: 10
+                max-wait: -1ms
+                time-between-eviction-runs: 60000
+            ssl:
+                enabled: false
+                bundle:
+            cluster:
+                nodes:
+#                - localhost:7000
+#                - localhost:6379
+#                - localhost:7001
+                max-redirects: 3  # 最大重定向次数
+                password:   # 如果需要密码认证，请提供密码
+            sentinel:
+                master:
+                nodes:
+#                - localhost:26379
+#                - localhost:26380
+#                - localhost:26381
+                username:
+                password:   # 如果需要密码认证，请提供密码
+            lettuce: #这里层级和spring的RedisProperties不一样。spring多了一层
+                shutdown-timeout: 100
+                dynamic-refresh-sources: true
+                period: 10000
+                adaptive: false
+            topic-listener: #topic监听器
+                listener: org.bf.framework.autoconfigure.redis.RedisTopicListener #类全名,如果配置会创建监听，必须是该类的实现类
+                topics:  #redis的发布订阅功能，如果配置有值，会创建监听
+#                - topicA
+#                - topicB
+#                - topicC
+
+    kafka:
+        default:
+            bootstrap-servers: 'test.broker:port'
+            clientId: ${spring.application.name}
+#            clientId: test_project
+            properties:
+                security:
+                    protocol: SASL_PLAINTEXT
+                sasl:
+                    mechanism: PLAIN
+                    jaas:
+                        #config: org.apache.kafka.common.security.plain.PlainLoginModule required username="admin" password="Admin111111";
+                        config: org.apache.kafka.common.security.plain.PlainLoginModule required username="bob" password="bob-password";
+                request.timeout.ms: 600000
+                linger.ms: 500
+                batch.size: 1000000
+                max.block.ms: 600000
+                buffer.memory: 500554432
+            consumer:
+                group-id: ${spring.application.name}
+#                group-id: test_project
+                max-poll-records: 100
+                enable-auto-commit: false
+                #序列化，默认就是String
+                #key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+                #value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+                #auto-commit-interval:
+                #auto-offset-reset: earliest
+                #max-poll-interval-ms: 300000
+                #session-timeout-ms: 30000
+                #fetch-min-size:
+                #fetch-max-wait:
+                #heartbeat-interval:
+                #isolation-level:
+            producer:
+                acks: all
+                retries: 3
+                compression-type: gzip
+                #序列化，默认就是String
+                #key-serializer: org.apache.kafka.common.serialization.StringSerializer
+                #value-serializer: org.apache.kafka.common.serialization.StringSerializer
+                #batch-size:
+                #buffer-memory:
+                #transaction-id-prefix:
+            admin:
+                fail-fast: true
+                modify-topic-configs: true
+                #auto-create: true #默认就是true
+                #close-timeout:
+                #operation-timeout:
+            streams:
+                auto-startup: true
+                #application-id:
+                #cache-max-size-buffering:
+                #state-store-cache-max-size:
+                #replication-factor:
+                #state-dir:
+            listener:
+                #type: SINGLE #默认SINGLE，可选BATCH
+                ack-mode: MANUAL_IMMEDIATE
+                #async-acks: false
+                concurrency: 4 #default concurrency
+                #poll-timeout:
+                #no-poll-threshold:
+                #idle-between-polls:   #Sleep interval between Consumer.poll(Duration) calls.default zero
+                #idle-event-interval:   #Time between publishing idle consumer events (no data received)
+                #Time between publishing idle partition consumer events (no data received for partition).
+                #idle-partition-event-interval:
+                #idle-partition-event-interval:
+                #log-container-config: true
+                missing-topics-fatal: false
+                #immediate-stop: false
+                #auto-startup: true
+                #change-consumer-threadName: true
+    elasticsearch:
+#        enabled: 'es1,es2'
+        default:
+#            url: '127.0.0.1:6379'
+            uris:
+            username:
+            password:
+            connection-timeout: 30000
+            socket-timeout: 10000
+            socket-keep-alive: false
+            path-prefix:
+            codegen-ref: #代码生成引用哪个mysql的配置
+            #restclient:
+                #sniffer:
+                    #interval:
+                    #delay-after-failure:
+                #ssl:
+                    #bundle:
+    storage:
+        #enabled: 'test1,test2,test3'
+        default:
+            platform: tencent
+            bucket-name:
+            access-key-id:
+            access-key-secret:
+            region:
+        test1:
+            platform: aws
+            region:
+        test2:
+            platform: aliyun
+            internal-endpoint:
+        test3:
+            platform: tencent
+            region:
+    vms:
+        #enabled: 'test1,test2,test3'
+        default:
+            platform: tencent
+            template-id:
+            access-key-id:
+            access-key-secret:
+            region:
+        hz:
+            platform: aliyun
+            access-key-id: your-id
+            access-key-secret: your-ks
+            region: cn-hangzhou
+            call-show-number:
+            template-id: TTS_xxx
+        gz:
+            platform: tencent
+            access-key-id: your-id
+            access-key-secret: your-ks
+            region: ap-guangzhou
+            app-id: appid
+            template-id: 13333333xxx
+    zookeeper:
+        default:
+            #url: '127.0.0.1:2181'
+            session-timeout-ms: 60000
+            connection-timeout-ms: 15000
+            base-sleep-time-ms: 1000
+            max-retries: 3
+            namespace: default
+    flink:
+#        enabled: 'kafka,rabbitmq,mongodb,pulsar'
+        default:
+            #实例配置引用，逗号分割，可以多个
+            source-instance-ref: ''
+            sink-instance-ref: ''
+        kafka:
+            source-instance-ref: 'sh,hz'
+            sink-instance-ref: 'sh,hz'
+        rabbitmq:
+            source-instance-ref: 'sh,hz'
+        mongodb:
+            sink-instance-ref: 'sh,hz'
+        pulsar:
+            source-instance-ref: 'sh,hz'
+            sink-instance-ref: 'sh,hz'
+    hadoop: #配置同spring.hadoop配置 https://docs.spring.io/spring-hadoop/docs/current/reference/html/springandhadoop-config.html
+        #        在spring基础上支持多实例同时连接支持，只需配置和开启
+#        enabled: 'gz'
+        default:
+            #实例配置引用，逗号分割，可以多个
+            fsUri: file:///opt/hdfs
+            resourceManagerAddress: ''
+            resourceManagerSchedulerAddress: ''
+            resourceManagerHost: ''
+            resourceManagerPort: ''
+            resourceManagerSchedulerPort: ''
+            jobHistoryAddress: ''
+#            resources:
+#            - classpath:/myentry.xml
+#            - file:/myentry.xml
+            config:  #hadoop官方配置
+                fs.defaultFS: file:///opt/hdfs
+#                fs.defaultFS: hdfs://localhost:8020
+        hz: #假设杭州集群，阿里云OSS配置方式
+            resourceManagerAddress: #可以继承default
+            resourceManagerSchedulerAddress: #可以继承default
+            jobHistoryAddress: #可以继承default
+            config:  #
+#                mapreduce.job.run-local: true
+                fs.defaultFS: oss://{your-bucket-name}/hadoop-test
+                fs.oss.impl: org.apache.hadoop.fs.aliyun.oss.AliyunOSSFileSystem
+                fs.oss.endpoint:
+                fs.oss.access-key-id:
+                fs.oss.access-key-secret:
+#                fs.oss.security-token:
+#                fs.oss.multipart.download.size:
+        us: #假设us集群，aws s3配置方式
+            resourceManagerAddress: #可以继承default
+            resourceManagerSchedulerAddress: #可以继承default
+            jobHistoryAddress: #可以继承default
+            config:  #
+                fs.defaultFS: s3a://{your-bucket-name}
+                fs.s3a.endpoint: s3.us-west-2.amazonaws.com
+                fs.s3a.access.key:
+                fs.s3a.secret.key:
+                fs.s3a.connection.maximum: 150
+                fs.s3a.connection.establish.timeout: 5000 # 单位:ms
+                fs.s3a.connection.timeout: 200000 # 单位:ms
+                fs.s3a.attempts.maximum: 20
+                fs.s3a.threads.max: 10
+                fs.s3a.threads.keepalivetime: 60 #单位：s
+    #            fs.s3a.aws.credentials.provider: com.amazonaws.auth.DefaultAWSCredentialsProviderChain
+        gz: #假设广州集群，腾讯云COS配置方式
+            resourceManagerAddress: #可以继承default
+            resourceManagerSchedulerAddress: #可以继承default
+            jobHistoryAddress: #可以继承default
+            config:  #
+                fs.defaultFS: cosn://{your-bucket-name}-{your-app-id}
+                fs.ofs.user.appid: {your-app-id}
+                fs.cosn.userinfo.secretId: {your-secretId}
+                fs.cosn.userinfo.secretKey: {your-secretKey}
+                fs.cosn.impl: org.apache.hadoop.fs.CosFileSystem
+                fs.AbstractFileSystem.cosn.impl: org.apache.hadoop.fs.CosN
+                fs.cosn.tmp.dir: /tmp/hadoop_cos
+                fs.cosn.bucket.region: ap-shanghai
+#                fs.cosn.upload.buffer: mapped_disk
+#                fs.cosn.credentials.provider: rg.apache.hadoop.fs.auth.SimpleCredentialProvider
+#                fs.cosn.upload.buffer.size: 134217728
+#                fs.cosn.upload.part.size: 8388608
+#                fs.cosn.maxRetries: 3
+#                fs.cosn.retry.interval.seconds: 3
+    batch:
+        default:
+            dataSourceRef: test
+    hbase:
+        default:
+            hadoopRef: default
+            zookeeper: 127.0.0.1:2181
+            tableName: testnamespace:testtable
+            familyName: f
+        hz:
+            hadoopRef: default
+            zookeeper: 127.0.0.1:2181
+            tableName: testnamespace:testtable
+            familyName: f
+    hive:
+        default:
+            hadoopRef: default
+            hiveUrl: jdbc:hive2://127.0.0.1:10000
+        hz:
+            hadoopRef: default
+            hiveUrl: jdbc:hive2://127.0.0.1:10000
+    yarn: # 配置参考 https://docs.spring.io/spring-hadoop/docs/current/reference/html/springandhadoop-yarn.html
+        default:
+            hadoopRef: default
+            appType: BOOT
+            appName: yarn-boot-simple
+            applicationBaseDir: /app
+            client:
+                launchcontext:
+                    command: /Users/bf/Library/Java/JavaVirtualMachines/azul-17.0.9/Contents/Home/bin/java
+                    archiveFile: appmaster.jar
+                    arguments:
+                        ---bf.yarn.mode: APPMASTER
+                        ---bf.yarn.enabled: default
+                clientClass: org.springframework.yarn.client.DefaultApplicationYarnClient
+                files:
+                    - "file:build/appmaster.jar"
+                    - "file:build/container.jar"
+            container:
+                containerClass: org.springframework.yarn.container.DefaultYarnContainer
+            appmaster:
+                containerCount: 1
+                launchcontext:
+                    command: /Users/bf/Library/Java/JavaVirtualMachines/azul-17.0.9/Contents/Home/bin/java
+                    archiveFile: container.jar
+                    arguments:
+                        ---bf.yarn.mode: CONTAINER
+                        ---bf.yarn.enabled: default
+                    locality: false
+                appmasterClass: org.springframework.yarn.am.StaticAppmaster
+        #                appmasterClass: org.springframework.yarn.am.StaticEventingAppmaster
+        yarn-batch-app:
+            hadoopRef: default
+            url: nomean
+            appType: BOOT
+            appName: yarn-boot-simple
+            applicationBaseDir: /app
+            appmaster:
+                localizer:
+                    patterns:
+                        - "*container*jar"
+                        - "*container*zip"
+                    zipPattern: "*zip"
+                containerCount: 1
+                launchcontext:
+                    command: /Users/bf/Library/Java/JavaVirtualMachines/azul-17.0.9/Contents/Home/bin/java
+                    archiveFile: container.jar
+                    arguments:
+                        ---bf.yarn.mode: CONTAINER
+                        ---bf.yarn.enabled: default
+                    locality: false
+                appmasterClass: org.springframework.yarn.batch.am.BatchAppmaster
+            container:
+                containerClass: org.springframework.yarn.batch.container.DefaultBatchYarnContainer
+        yarn-store-groups:
+            hadoopRef: default
+            appType: BOOT
+            appName: yarn-store-groups
+            applicationBaseDir: /app/
+            client:
+                launchcontext:
+                    command: /Users/bf/Library/Java/JavaVirtualMachines/azul-17.0.9/Contents/Home/bin/java
+                    archiveFile: appmaster.jar
+                    arguments:
+                        ---bf.yarn.mode: APPMASTER
+                        ---bf.yarn.enabled: yarn-store-groups
+                clientClass: org.springframework.yarn.client.DefaultApplicationYarnClient
+                files:
+                    - "file:build/appmaster.jar"
+                    - "file:build/container.jar"
+            #                resource:
+            #                    memory: 1g
+            appmaster:
+                appmasterClass: org.springframework.yarn.am.cluster.ManagedContainerClusterAppmaster
+                keepContextAlive: true
+                containercluster:
+                    enabled: true
+                    clusters:
+                        store:
+                            projection:
+                                type: default
+                                data:
+                                    any: 1
+                            resource:
+                                priority: 10
+                                memory: 64
+                                virtualCores: 1
+                            launchcontext:
+                                command: /Users/bf/Library/Java/JavaVirtualMachines/azul-17.0.9/Contents/Home/bin/java
+                                archiveFile: container.jar
+                                arguments:
+                                    ---bf.yarn.mode: CONTAINER
+                                    ---bf.yarn.enabled: yarn-store-groups
+                    locality: false
+dubbo:
+    registry:
+        address: zookeeper://127.0.0.1:2181
+    protocol:
+        name: tri #dubbo
+        port: 50051 #27887
+        #threads: 300
+    application:
+        name: ${spring.application.name}
+        qos-enable: true
+        qos-port: 22222
+        qos-accept-foreign-ip: true
+        logger: slf4j
+        #parameters:
+            #router: tagFix
+#    config-center:
+#        address: apollo://${apollo.address:127.0.0.1}:8080
+    consumer:
+        check: false
+        timeout: 5000
+    provider:
+        timeout: 5000
+#    tracing:
+#        enabled: true
+#        sampling:
+#            probability: 0.5
+#        propagation:
+#            type: W3C
+#        tracing-exporter:
+#            otlp-config:
+#                endpoint: http://localhost:4317
+#                timeout: 10s
+#                compression-method: none
+#                headers:
+#                    auth: admin
+

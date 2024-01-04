@@ -1,0 +1,2 @@
+org.springframework.boot.env.EnvironmentPostProcessor=org.bf.framework.boot.AppContextInitializer
+org.springframework.context.ApplicationContextInitializer=org.bf.framework.boot.AppContextInitializer

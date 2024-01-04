@@ -1,0 +1,7 @@
+2024-01
+0. 初始版本，依赖spring-boot3和bf-parent(父pom,由bf-pom工程维护)，需要JDK17以上
+1. 初步支持涵盖了中小企业开发大型高并发分布式业务的常用的一些技术栈和中间件。例如db,redis,elasicsearch,kafka,dubbo,zk,
+2. 有对大数据hadoop技术栈的完整支持：支持hdfs,hbase,hive,yarn,flink。底层文件存储既支持原生hdfs,也支持各大云厂商对象存储
+3. 有对云服务厂商的支持，例如对象存储服务（目前支持AWS s3，阿里云OSS，腾讯云COS），语音服务（阿里云和腾讯云VMS）。
+4. 配合Prometheus和grafana,支持应用监控服务。支持链路追踪中间件skywalking
+5. 支持任务job框架xxl-job，支持spring轻量级批处理框架spring-batch

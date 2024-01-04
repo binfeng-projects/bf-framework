@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <springProperty scope="context" name="logging.level.root" source="logging.level.root" defaultValue="INFO"/>
+    <property name="LOG_FILE" value="${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/applicaiton.log"/>
+    <property name="ERROR_FILE" value="${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/error.log"/>
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%X{tid}] [%thread] %logger{36} %msg%n"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGBACK_ROLLINGPOLICY_FILE_NAME_PATTERN:-${LOG_FILE}.%d{yyyy-MM-dd}.gz}</fileNamePattern>
+            <maxHistory>${LOGBACK_ROLLINGPOLICY_MAX_HISTORY:-30}</maxHistory>
+        </rollingPolicy>
+    </appender>
+    <!--在默认基础上增加一个ERROR输出-->
+    <appender name="ERROR_APPEND" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <file>${ERROR_FILE}</file>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGBACK_ROLLINGPOLICY_FILE_NAME_PATTERN:-${ERROR_FILE}.%d{yyyy-MM-dd}.gz}</fileNamePattern>
+            <maxHistory>${LOGBACK_ROLLINGPOLICY_MAX_HISTORY:-30}</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <springProfile name="local">
+        <root level="${logging.level.root}">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+    <springProfile name="!local">
+        <root level="${logging.level.root}">
+            <appender-ref ref="FILE"/>
+            <appender-ref ref="ERROR_APPEND"/>
+        </root>
+    </springProfile>
+</configuration>

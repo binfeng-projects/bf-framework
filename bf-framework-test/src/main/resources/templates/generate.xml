@@ -1,0 +1,250 @@
+[#include "common.ftl"]
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="${daoFull}" >
+    <resultMap id="BaseResultMap" type="${entityFull}" >
+        <id column="id" property="id"/>
+[#list table.columns as field]
+[#if field.javaType=='Enum']
+        <result column="${field.sqlName}" property="${field.javaName}" />
+[#elseif field.javaType=='Object']
+[#else]
+        <result column="${field.sqlName}" property="${field.javaName}" />
+[/#if]
+[/#list]
+        <result column="created_at" property="createdAt" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="version" property="version" />
+    </resultMap>
+
+
+    <sql id="Table_Name" >${table.sqlName}</sql>
+
+    <sql id="Base_Column" >
+        [@fieldList  /]
+    </sql>
+
+    <sql id="Base_Column_List" >
+        id,
+        <trim suffixOverrides=",">
+            <include refid="Base_Column"/>
+        </trim>
+        created_at,updated_at,version
+    </sql>
+
+    <sql id="Field_Eq_Property" >
+        [@fieldPropertyList /]
+    </sql>
+
+    <sql id="Where_In_Sql" >
+        [@selectIdsSql /]
+    </sql>
+
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        <include refid="Table_Name"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        [@fieldList "" true /]
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+        [@propertyList "" true /]
+        </trim>
+    </insert>
+
+
+    <insert id="insertBatch">
+        insert into
+        <include refid="Table_Name"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="Base_Column"/>
+        </trim>
+        values
+        <foreach item="wherePo" collection="list" separator=",">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        [@propertyList "wherePo." /]
+        </trim>
+        </foreach>
+    </insert>
+
+    <select id="getById" resultMap="BaseResultMap" parameterType="${idType}">
+        select
+        <include refid="Base_Column_List" />
+        from <include refid="Table_Name" />
+        <include refid="Where_Sql"></include>
+    </select>
+
+    <delete id="deleteById" parameterType="${idType}">
+        delete from <include refid="Table_Name" />
+        <include refid="Where_Sql"></include>
+    </delete>
+
+    <select id="listByWhere" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from <include refid="Table_Name" />
+        <include refid="Where_Sql">
+            [#noparse]
+            <property name="id" value="#{body.id}"/>
+            <property name="version" value="#{body.version}"/>
+            <property name="createdAt" value="#{body.createdAt}"/>
+            <property name="updatedAt" value="#{body.updatedAt}"/>
+            [/#noparse]
+            [#list table.columns as field]
+            <property name="${field.javaName}" value="${r"#{body."}${field.javaName}${r"}"}"/>
+            [/#list]
+        </include>
+        [#noparse] limit #{offset},#{size} [/#noparse]
+    </select>
+
+ [#noparse]
+
+    <sql id="Where_Sql" >
+        where 1 = 1
+        <include refid="Where_In_Sql"></include>
+        <include refid="Field_Eq_Property"><property name="joinStr" value="and"/></include>
+    </sql>
+
+    <!-- update只提供根绝id或者ids 作in操作的批量更新 -->
+    <update id="updateSelective">
+        update <include refid="Table_Name" />
+        <set>
+            <include refid="Field_Eq_Property"><property name="joinStr" value=","/></include>
+        </set>
+        where 1 = 1
+        <include refid="Where_In_Sql"></include>
+    </update>
+
+
+    <select id="getOneByWhere" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from <include refid="Table_Name" />
+        <include refid="Where_Sql"></include>
+    </select>
+
+    <select id="listByIds" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from <include refid="Table_Name" />
+        <include refid="Where_Sql"></include>
+    </select>
+
+    <select id="countByWhere" resultType="java.lang.Long">
+        select count(1) from <include refid="Table_Name" />
+        <include refid="Where_Sql"></include>
+    </select>
+
+
+    <select id="maxIdByWhere" resultType="java.lang.Long">
+        SELECT max(id) FROM <include refid="Table_Name"/>
+        <include refid="Where_Sql"></include>
+    </select>
+
+
+    <!-- 比较危险，慎用 -->
+    <delete id="deleteByWhere">
+        delete from <include refid="Table_Name" />
+        <include refid="Where_Sql"></include>
+    </delete>
+
+    <delete id="deleteByIds">
+        delete from <include refid="Table_Name" />
+        <include refid="Where_Sql"></include>
+    </delete>
+
+[/#noparse]
+</mapper>
+
+[#macro mapperElPrefix value prefix]
+    [#if prefix?default("")?trim?length gt 1]
+        ${r"#{"}${prefix}${value}} [#t /]
+    [#else]
+        ${r"#{"}${value}}[#t /]
+    [/#if]
+[/#macro]
+
+[#macro mapperKvPrefix k v prefix]
+    [#if prefix?default("")?trim?length gt 1]
+        ${r"${joinStr"}} ${k}=${r"#{"}${prefix}${v}}[#t /]
+    [#else]
+        ${r"${joinStr"}} ${k}=${r"#{"}${v}}[#t /]
+    [/#if]
+[/#macro]
+
+[#macro fieldList prefix="" hasIf=false]
+    [#if (hasIf)]
+        [#list table.columns as field]
+        [#if field.javaType=='String']
+        <if test="${prefix!}${field.javaName} != null and ${prefix!}${field.javaName} != ''" >${field.sqlName}[#if field_has_next],[/#if]</if>
+        [#elseif field.javaType=='Object']
+        [#elseif field.javaType=='Enum']
+        <if test="${prefix!}${field.javaName}!=null">${field.sqlName}[#if field_has_next],[/#if]</if>
+        [#else]
+        <if test="${prefix!}${field.javaName}!=null">${field.sqlName}[#if field_has_next],[/#if]</if>
+        [/#if]
+        [/#list]
+    [#else]
+        [#list table.columns as field]
+        [#if field.javaType=='Enum']
+        ${field.sqlName}[#if field_has_next],[/#if]
+        [#elseif field.javaType=='Object']
+        [#else]
+        ${field.sqlName}[#if field_has_next],[/#if]
+        [/#if]
+        [/#list]
+    [/#if]
+[/#macro]
+
+
+[#macro propertyList prefix="" hasIf=false]
+    [#if (hasIf)]
+        [#list table.columns as field]
+        [#if field.javaType=='String']
+        <if test="${prefix!}${field.javaName} != null and ${prefix!}${field.javaName} != ''" >[@mapperElPrefix field.javaName prefix /][#if field_has_next],[/#if]</if>
+        [#elseif field.javaType=='Object']
+        [#else]
+        <if test="${prefix!}${field.javaName}!=null">[@mapperElPrefix field.javaName prefix /][#if field_has_next],[/#if]</if>
+        [/#if]
+        [/#list]
+    [#else]
+        [#list table.columns as field]
+        [#if field.javaType=='Object']
+        [#else]
+        [@mapperElPrefix field.javaName prefix /][#if field_has_next],[/#if]
+        [/#if]
+        [/#list]
+    [/#if]
+[/#macro]
+
+
+[#macro fieldPropertyList prefix=""]
+    [#list table.columns as field]
+        [#if field.javaType=='String']
+        <if test="${prefix!}${field.javaName} != null and ${prefix!}${field.javaName} != ''"> [@mapperKvPrefix field.sqlName field.javaName prefix /][#if field_has_next][/#if]</if>
+        [#elseif field.javaType=='Enum']
+        <if test="${prefix!}${field.javaName}!=null"> [@mapperKvPrefix "${field.sqlName}" field.javaName prefix /][#if field_has_next][/#if]</if>
+        [#elseif field.javaType=='Object']
+        [#else]
+        <if test="${prefix!}${field.javaName}!=null"> [@mapperKvPrefix field.sqlName field.javaName prefix /][#if field_has_next][/#if]</if>
+        [/#if]
+    [/#list]
+[/#macro]
+
+
+[#macro selectIdsSql prefix=""]
+        <if test="${prefix!}id != null">
+        and id = ${r"#{"}${prefix!}id}
+        </if>
+        <if test="${prefix!}ids != null and ${prefix!}ids.size() > 0" >
+            and
+            <choose>
+                <when test="${prefix!}queryInFieldName != null  and ${prefix!}queryInFieldName !=''">${r"${"}${prefix!}queryInFieldName}</when>
+                <otherwise>id</otherwise>
+            </choose>
+            in
+            <foreach collection="${prefix!}ids" item="item" open="(" separator="," close=")">
+            ${r"#{item}"}
+            </foreach>
+        </if>
+[/#macro]

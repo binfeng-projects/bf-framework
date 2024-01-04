@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.18.0.xsd">
+    <logging>INFO</logging>
+    <onError>FAIL</onError>
+    <onUnused>LOG</onUnused>
+    <jdbc>
+        <driver>com.mysql.cj.jdbc.Driver</driver>
+    </jdbc>
+
+    <generator>
+        <!-- The default code generator. You can override this one, to generate your own code style.
+     Supported generators:
+     - org.jooq.codegen.JavaGenerator
+     - org.jooq.codegen.KotlinGenerator
+     - org.jooq.codegen.ScalaGenerator
+     Defaults to org.jooq.codegen.JavaGenerator -->
+        <name>org.bf.framework.test.jooq.JooqJavaGenerator</name>
+        <!-- Optional: The programmatic or configurative generator strategy. -->
+        <strategy>
+            <name>org.bf.framework.test.jooq.JooqJavaStrategy</name>
+        </strategy>
+        <generate>
+            <interfaces>true</interfaces>
+            <!-- Turn on the generation of interfaces -->
+            <!--
+            <immutableInterfaces>true</immutableInterfaces>
+            <serializableInterfaces>true</serializableInterfaces>
+            -->
+            <!-- 生成pojo -->
+            <daos>true</daos>
+<!--            <pojos>false</pojos>-->
+            <!-- 生成transactional等spring注解-->
+<!--            <springAnnotations>true</springAnnotations>-->
+            <!-- 生成打了spring注解的基类dao-->
+<!--            <springDao>true</springDao>-->
+<!--            <sources>true</sources>-->
+            <!--
+            <sourcesOnViews>true</sourcesOnViews>
+            -->
+            <!-- This overrides all the other individual flags
+            <globalObjectReferences>true</globalObjectReferences>
+            -->
+            <!-- Individual flags for each object type -->
+            <!--
+            <globalCatalogReferences>true</globalCatalogReferences>
+            <globalSchemaReferences>true</globalSchemaReferences>
+            <globalTableReferences>true</globalTableReferences>
+            <globalSequenceReferences>true</globalSequenceReferences>
+            <globalDomainReferences>true</globalDomainReferences>
+            <globalUDTReferences>true</globalUDTReferences>
+            <globalRoutineReferences>true</globalRoutineReferences>
+            <globalQueueReferences>true</globalQueueReferences>
+            <globalLinkReferences>true</globalLinkReferences>
+            -->
+<!--            <fluentSetters>true</fluentSetters>-->
+            <javaTimeTypes>true</javaTimeTypes>
+            <!-- 内置类型，默认是开启的，可以关闭 -->
+            <!--
+            <intervalTypes>false</intervalTypes>
+            <jsonTypes>false</jsonTypes>
+            <spatialTypes>false</spatialTypes>
+            <xmlTypes>false</xmlTypes>
+            -->
+            <!-- 全类名
+            <fullyQualifiedTypes>.*\.MY_TABLE</fullyQualifiedTypes>
+            -->
+            <!-- Possible values for generatedAnnotationType
+               - DETECT_FROM_JDK
+               - JAVAX_ANNOTATION_GENERATED
+               - JAVAX_ANNOTATION_PROCESSING_GENERATED -->
+            <generatedAnnotation>false</generatedAnnotation>
+            <!--
+            <generatedAnnotationType>DETECT_FROM_JDK</generatedAnnotationType>
+            <generatedAnnotationDate>true</generatedAnnotationDate>
+            <generatedAnnotationJooqVersion>true</generatedAnnotationJooqVersion>
+            -->
+            <!--
+            <nullableAnnotation>true</nullableAnnotation>
+            <nullableAnnotationType>javax.annotation.Nullable</nullableAnnotationType>
+            <nonnullAnnotation>true</nonnullAnnotation>
+            <nonnullAnnotationType>javax.annotation.Nonnull</nonnullAnnotationType>
+
+            <jpaAnnotations>true</jpaAnnotations>
+            <jpaVersion>2.2</jpaVersion>
+            -->
+
+            <validationAnnotations>true</validationAnnotations>
+            <!--
+            <kotlinSetterJvmNameAnnotationsOnIsPrefix>true</kotlinSetterJvmNameAnnotationsOnIsPrefix>
+            <constructorPropertiesAnnotation>true</constructorPropertiesAnnotation>
+            <constructorPropertiesAnnotationOnPojos>true</constructorPropertiesAnnotationOnPojos>
+            <constructorPropertiesAnnotationOnRecords>true</constructorPropertiesAnnotationOnRecords>
+            -->
+        </generate>
+        <target>
+            <directory>src/main/java</directory>
+        </target>
+        <database>
+            <name>org.jooq.meta.mysql.MySQLDatabase</name>
+            <!--
+            <recordVersionFields>REC_VERSION</recordVersionFields>
+            <recordTimestampFields>REC_TIMESTAMP</recordTimestampFields>
+            <dateAsTimestamp>true</dateAsTimestamp>
+            -->
+            <unsignedTypes>false</unsignedTypes>
+            <forcedTypes>
+                <!-- 枚举转换 -->
+                <!--
+                <forcedType>
+                    <userType>com.example.MyEnum</userType>
+                    <enumConverter>true</enumConverter>
+                    <includeExpression>.*\.MY_STATUS</includeExpression>
+                </forcedType>
+
+                <forcedType>
+                    <name>BIGINT</name>
+                    <includeExpression>.*_ID</includeExpression>
+                    <includeTypes>NUMBER</includeTypes>
+                </forcedType>
+                -->
+                <!-- json转换,还有xml转换，知道就好,应该用的不多 -->
+                <!--
+                <forcedType>
+                    <userType>com.example.MyType</userType>
+                    <jsonConverter>true</jsonConverter>
+                    <includeExpression>.*\.JSON_COLUMN</includeExpression>
+                </forcedType>
+                -->
+                <forcedType>
+                    <!-- Specify any data type that is supported in your database, or if unsupported,
+                         a type from org.jooq.impl.SQLDataType -->
+                    <name>BOOLEAN</name>
+                    <!-- A Java regex matching fully-qualified columns, attributes, parameters. Use the pipe to separate several expressions. -->
+                    <includeExpression>.*\.IS_.*</includeExpression>
+                    <!-- A Java regex matching data types to be forced to have this type.
+                         Data types may be reported by your database as:
+                         - NUMBER              regexp suggestion: NUMBER
+                         - NUMBER(5)           regexp suggestion: NUMBER\(5\)
+                         - NUMBER(5, 2)        regexp suggestion: NUMBER\(5,\s*2\)
+                         - any other form.
+                         It is thus recommended to use defensive regexes for types. -->
+                    <includeTypes>.*</includeTypes>
+                    <!-- Force a type depending on data type nullability. Default is ALL.
+                          - ALL - Force a type regardless of whether data type is nullable or not (default)
+                          - NULL - Force a type only when data type is nullable
+                          - NOT_NULL - Force a type only when data type is not null -->
+                    <nullability>ALL</nullability>
+                    <!-- Force a type on ALL or specific object types. Default is ALL. Options include:
+                         ATTRIBUTE, COLUMN, ELEMENT, PARAMETER, SEQUENCE -->
+                    <objectType>ALL</objectType>
+                </forcedType>
+                <!-- 自定义类型-->
+                <!--
+                <forcedType>
+                    <userType>java.time.Year</userType>
+                    <converter>com.example.IntegerToYearConverter</converter>
+                    <converter>org.jooq.Converter.ofNullable(
+                    Integer.class, Year.class,
+                    Year::of, Year::getValue
+                    )</converter>
+                    <lambdaConverter>
+                        <from>Year::of</from>
+                        <to>Year::getValue</to>
+                    </lambdaConverter>
+                    <includeExpression>.*\.YEAR.*</includeExpression>
+                </forcedType>
+                -->
+            </forcedTypes>
+            <syntheticObjects>
+                <!-- 所有系统表的唯一标识字段都叫id -->
+                <!--
+                <identities>
+                    <identity>
+                        <tables>.*</tables>
+                        <fields>ID</fields>
+                    </identity>
+                </identities>
+                -->
+            </syntheticObjects>
+            <includeTables>true</includeTables>
+            <includeSystemTables>false</includeSystemTables>
+            <includeInvisibleColumns>true</includeInvisibleColumns>
+            <includeEmbeddables>true</includeEmbeddables>
+            <includeRoutines>false</includeRoutines>
+            <includePackages>true</includePackages>
+            <includePackageRoutines>false</includePackageRoutines>
+            <includePackageUDTs>false</includePackageUDTs>
+            <includePackageConstants>false</includePackageConstants>
+            <includeUDTs>false</includeUDTs>
+            <includeDomains>false</includeDomains>
+            <includeSequences>false</includeSequences>
+            <includeSystemSequences>false</includeSystemSequences>
+            <includePrimaryKeys>true</includePrimaryKeys>
+            <includeUniqueKeys>false</includeUniqueKeys>
+            <includeForeignKeys>false</includeForeignKeys>
+            <includeCheckConstraints>false</includeCheckConstraints>
+            <includeSystemCheckConstraints>false</includeSystemCheckConstraints>
+            <includeIndexes>false</includeIndexes>
+            <includeSystemIndexes>false</includeSystemIndexes>
+        </database>
+    </generator>
+</configuration>
