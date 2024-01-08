@@ -15,12 +15,9 @@
  */
 package org.bf.framework.autoconfigure.hive.support;
 
-import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
-import org.apache.hadoop.hive.metastore.api.ConfigValSecurityException;
 import org.apache.hadoop.io.IOUtils;
-import org.apache.thrift.TBase;
-import org.apache.thrift.TException;
-import org.springframework.dao.*;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.NonTransientDataAccessResourceException;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -50,27 +47,22 @@ abstract class HiveUtils {
 			throw (RuntimeException) ex;
 		}
 
-		// Thrift client exception
-//		if (ex instanceof HiveServerException) {
-//			return convert((HiveServerException) ex);
+//		if (ex instanceof TException) {
+//			return new DataAccessResourceFailureException(ex.getMessage(), ex);
 //		}
-		if (ex instanceof TException) {
-			return new DataAccessResourceFailureException(ex.getMessage(), ex);
-		}
-
-		// HiveClient MetaStore Thrift API exceptions
-		if (ex instanceof TBase) {
-			// TODO modify
-//			if (ex instanceof AlreadyExistsException || ex instanceof IndexAlreadyExistsException) {
-			if (ex instanceof AlreadyExistsException) {
-				return new DataIntegrityViolationException(ex.toString(), ex);
-			}
-			if (ex instanceof ConfigValSecurityException) {
-				return new PermissionDeniedDataAccessException(ex.toString(), ex);
-			}
-			// fallback
-			return new InvalidDataAccessResourceUsageException(ex.toString(), ex);
-		}
+//
+//		if (ex instanceof TBase) {
+//			// TODO modify
+////			if (ex instanceof AlreadyExistsException || ex instanceof IndexAlreadyExistsException) {
+//			if (ex instanceof AlreadyExistsException) {
+//				return new DataIntegrityViolationException(ex.toString(), ex);
+//			}
+//			if (ex instanceof ConfigValSecurityException) {
+//				return new PermissionDeniedDataAccessException(ex.toString(), ex);
+//			}
+//			// fallback
+//			return new InvalidDataAccessResourceUsageException(ex.toString(), ex);
+//		}
 		// unknown
 		return new NonTransientDataAccessResourceException("Unknown exception", ex);
 	}
@@ -152,21 +144,21 @@ abstract class HiveUtils {
 		return results;
 	}
 
-	static List<String> runWithConversion(HiveClient hive, Iterable<HiveScript> scripts, boolean closeHive) throws DataAccessException {
-		try {
-			return run(hive, scripts);
-		} catch (Exception ex) {
-			throw convert(ex);
-		} finally {
-			try {
-				if (closeHive) {
-					hive.shutdown();
-				}
-			} catch (Exception ex) {
-				throw new InvalidDataAccessResourceUsageException("Error while closing client connection", ex);
-			}
-		}
-	}
+//	static List<String> runWithConversion(HiveClient hive, Iterable<HiveScript> scripts, boolean closeHive) throws DataAccessException {
+//		try {
+//			return run(hive, scripts);
+//		} catch (Exception ex) {
+//			throw convert(ex);
+//		} finally {
+//			try {
+//				if (closeHive) {
+//					hive.shutdown();
+//				}
+//			} catch (Exception ex) {
+//				throw new InvalidDataAccessResourceUsageException("Error while closing client connection", ex);
+//			}
+//		}
+//	}
 
 	/**
 	 * Runs (or executes) the given script with the given parameters. Note that in order to support the given

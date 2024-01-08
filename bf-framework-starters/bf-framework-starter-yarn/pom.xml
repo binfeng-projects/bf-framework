@@ -10,7 +10,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.data</groupId>
-            <artifactId>spring-yarn-boot-cli</artifactId>
+            <artifactId>spring-yarn-boot</artifactId>
         </dependency>
         <dependency>
             <groupId>org.bf.framework</groupId>

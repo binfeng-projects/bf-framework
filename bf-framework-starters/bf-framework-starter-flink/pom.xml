@@ -10,7 +10,7 @@
     <dependencies>
         <dependency>
             <groupId>org.bf.framework</groupId>
-            <artifactId>bf-framework-autoconfigure</artifactId>
+            <artifactId>bf-framework-starter-kafka</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.flink</groupId>

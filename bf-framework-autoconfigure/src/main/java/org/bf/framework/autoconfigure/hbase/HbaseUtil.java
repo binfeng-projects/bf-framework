@@ -1,16 +1,14 @@
 package org.bf.framework.autoconfigure.hbase;
 
 import cn.hutool.core.lang.Assert;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.bf.framework.common.util.CollectionUtils;
+import org.bf.framework.common.util.MapUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -144,7 +142,7 @@ public class HbaseUtil {
             table = conn.getTable(TableName.valueOf(tableName));
             //指定列簇
             scanner = table.getScanner(scan);
-            List<Map<String,String>> resultList = Lists.newArrayList();
+            List<Map<String,String>> resultList = org.bf.framework.common.util.CollectionUtils.newArrayList();
             if(scanner == null){
                 return resultList;
             }
@@ -225,13 +223,13 @@ public class HbaseUtil {
         Assert.notNull(familyByte,"familyByte null");
         Table table = null;
         try {
-            List<Get> getList = Lists.newArrayList();
+            List<Get> getList = CollectionUtils.newArrayList();
             for (String rowKey : rowKeys) {
                 getList.add(formmatGet(familyByte,Bytes.toBytes(rowKey),qualifiers));
             }
             table = conn.getTable(TableName.valueOf(tableName));
             Result[] results = table.get(getList);
-            List<Map<String,String>> resultList = Lists.newArrayList();
+            List<Map<String,String>> resultList = CollectionUtils.newArrayList();
             if(results == null || results.length <= 0){
                 return resultList;
             }
@@ -274,7 +272,7 @@ public class HbaseUtil {
      * @return
      */
     public static Map<String,String> fommatResultAsMap(Result res,byte[] familyByte){
-        Map<String,String> resultMap = Maps.newHashMap();
+        Map<String,String> resultMap = MapUtils.newHashMap();
         if(res == null || res.isEmpty()){
             return resultMap;
         }

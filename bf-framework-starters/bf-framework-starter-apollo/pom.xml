@@ -6,25 +6,15 @@
         <artifactId>bf-framework-starters</artifactId>
         <version>${revision}</version>
     </parent>
-    <artifactId>bf-framework-starter-caffeine</artifactId>
+    <artifactId>bf-framework-starter-apollo</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.bf.framework</groupId>
             <artifactId>bf-framework-autoconfigure</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.errorprone</groupId>
-                    <artifactId>error_prone_annotations</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.checkerframework</groupId>
-                    <artifactId>checker-qual</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.ctrip.framework.apollo</groupId>
+            <artifactId>apollo-client</artifactId>
         </dependency>
     </dependencies>
 </project>

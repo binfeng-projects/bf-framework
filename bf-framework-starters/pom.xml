@@ -28,5 +28,6 @@
         <module>bf-framework-starter-yarn</module>
         <module>bf-framework-starter-flink</module>
         <module>bf-framework-starter-batch</module>
+        <module>bf-framework-starter-apollo</module>
     </modules>
 </project>

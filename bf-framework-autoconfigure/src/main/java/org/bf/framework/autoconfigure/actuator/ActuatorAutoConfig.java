@@ -1,12 +1,12 @@
 package org.bf.framework.autoconfigure.actuator;
 
 import cn.hutool.core.net.NetUtil;
-import com.google.common.collect.Maps;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.config.MeterFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.boot.util.SpringUtil;
 import org.bf.framework.common.util.JSON;
+import org.bf.framework.common.util.MapUtils;
 import org.bf.framework.common.util.StringUtils;
 import org.bf.framework.common.util.http.HttpUtil;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -59,11 +59,11 @@ public class ActuatorAutoConfig {
             List<String> tags = new ArrayList<String>();
             tags.add("metrics=true"); //consul配置过滤该标签的注册服务到Prometheus
             data.put("tags",tags);
-            Map<String,Object> checkHealth = Maps.newHashMap();
+            Map<String,Object> checkHealth = MapUtils.newHashMap();
             checkHealth.put("http","http://" + id + "/metrics");
             checkHealth.put("interval","10s");
             data.put("check",checkHealth);
-            Map<String,Object> meta = Maps.newHashMap(); //最终会转换成Prometheus的label
+            Map<String,Object> meta = MapUtils.newHashMap(); //最终会转换成Prometheus的label
             meta.put("cluster", SpringUtil.currentCluster());
             meta.put("env", SpringUtil.currentEnv());
             meta.put("frameworkVersion", SpringUtil.frameworkVersion());
