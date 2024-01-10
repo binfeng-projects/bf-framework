@@ -1,5 +1,6 @@
 org.bf.framework.autoconfigure.jdbc.JdbcAutoConfig
 org.bf.framework.autoconfigure.jooq.JooqAutoConfig
+org.bf.framework.autoconfigure.mybatis.MybatisAutoConfig
 org.bf.framework.autoconfigure.caffeine.CaffeineAutoConfig
 org.bf.framework.autoconfigure.redis.RedisAutoConfig
 org.bf.framework.autoconfigure.kafka.KafkaAutoConfig

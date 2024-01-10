@@ -12,6 +12,7 @@ import org.springframework.boot.context.properties.source.ConfigurationPropertyS
 import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import static org.bf.framework.boot.constant.FrameworkConst.*;
  */
 @Slf4j
 public class SpringUtil {
+    public static final PathMatchingResourcePatternResolver RESOURCE_RESOLVER = new PathMatchingResourcePatternResolver();
     public static Object getBean(String name){
         return getBean(name,null);
     }

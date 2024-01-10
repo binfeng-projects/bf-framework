@@ -6,7 +6,7 @@ public Condition dynamicCondition(${entity} e) {
     [#list table.columns as field]
     [#if field.javaType=='String']
     if(StringUtils.isNotBlank(e.get${field.javaName?cap_first}())) {
-        cd.and(${table.sqlName?upper_case}.${field.sqlName?upper_case}.eq(e.get${field.javaName?cap_first}()));
+        cd = cd.and(${table.sqlName?upper_case}.${field.sqlName?upper_case}.eq(e.get${field.javaName?cap_first}()));
     }
     [#elseif field.javaType=='Long']
     [#elseif field.javaType=='Integer']
@@ -17,7 +17,7 @@ public Condition dynamicCondition(${entity} e) {
     [#elseif field.javaType=='Object']
     [#else]
     if(null != e.get${field.javaName?cap_first}()) {
-        cd.and(${table.sqlName?upper_case}.${field.sqlName?upper_case}.eq(e.get${field.javaName?cap_first}()));
+        cd = cd.and(${table.sqlName?upper_case}.${field.sqlName?upper_case}.eq(e.get${field.javaName?cap_first}()));
     }
     [/#if]
     [/#list]

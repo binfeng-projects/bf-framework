@@ -11,6 +11,7 @@
     <modules>
         <module>bf-framework-starter-jdbc</module>
         <module>bf-framework-starter-jooq</module>
+        <module>bf-framework-starter-mybatis</module>
         <module>bf-framework-starter-redis</module>
         <module>bf-framework-starter-caffeine</module>
         <module>bf-framework-starter-kafka</module>

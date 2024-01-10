@@ -10,7 +10,12 @@ public interface MiddlewareConst {
     String PREFIX_DATASOURCE = BF + DOT + "datasource";
     String BEAN_DATASOURCE = "_DataSource";
     String BEAN_PLATFORMTRANSACTIONMANAGER = "_PlatformTransactionManager";
+    //-----------------------------------jooq------------------------------
+    String PREFIX_JOOQ = BF + DOT + "jooq";
     String BEAN_DSLCONTEXT = "_DSLContext";
+    //-----------------------------------mybatis------------------------------
+    String PREFIX_MYBATIS = BF + DOT + "mybatis";
+    String BEAN_SQLSESSIONFACTORY = "_SqlSessionFactory";
 
     //-----------------------------------local-cache------------------------------
     String PREFIX_CACHE = BF + DOT + "cache";

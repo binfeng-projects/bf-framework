@@ -57,7 +57,7 @@
             <includeDomains>false</includeDomains>
             <includeSequences>false</includeSequences>
             <includeSystemSequences>false</includeSystemSequences>
-            <includePrimaryKeys>false</includePrimaryKeys>
+            <includePrimaryKeys>true</includePrimaryKeys>
             <includeUniqueKeys>false</includeUniqueKeys>
             <includeForeignKeys>false</includeForeignKeys>
             <includeCheckConstraints>false</includeCheckConstraints>

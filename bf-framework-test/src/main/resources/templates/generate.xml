@@ -1,5 +1,4 @@
 [#include "common.ftl"]
-
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="${daoFull}" >
@@ -26,11 +25,10 @@
     </sql>
 
     <sql id="Base_Column_List" >
-        id,
+        id,created_at,updated_at,version,
         <trim suffixOverrides=",">
             <include refid="Base_Column"/>
         </trim>
-        created_at,updated_at,version
     </sql>
 
     <sql id="Field_Eq_Property" >
@@ -67,37 +65,38 @@
         </foreach>
     </insert>
 
-    <select id="getById" resultMap="BaseResultMap" parameterType="${idType}">
-        select
-        <include refid="Base_Column_List" />
-        from <include refid="Table_Name" />
-        <include refid="Where_Sql"></include>
-    </select>
-
-    <delete id="deleteById" parameterType="${idType}">
-        delete from <include refid="Table_Name" />
-        <include refid="Where_Sql"></include>
-    </delete>
-
     <select id="listByWhere" resultMap="BaseResultMap" >
         select
         <include refid="Base_Column_List" />
         from <include refid="Table_Name" />
-        <include refid="Where_Sql">
-            [#noparse]
-            <property name="id" value="#{body.id}"/>
-            <property name="version" value="#{body.version}"/>
-            <property name="createdAt" value="#{body.createdAt}"/>
-            <property name="updatedAt" value="#{body.updatedAt}"/>
-            [/#noparse]
-            [#list table.columns as field]
-            <property name="${field.javaName}" value="${r"#{body."}${field.javaName}${r"}"}"/>
-            [/#list]
-        </include>
+        where 1 = 1
+        [@selectIdsSql "p." /]
+        [@fieldPropertyList "p." /]
         [#noparse] limit #{offset},#{size} [/#noparse]
     </select>
 
  [#noparse]
+
+    <select id="selectStartEnd" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from <include refid="Table_Name" /> where
+        <![CDATA[  id >= #{startId} and id < #{endId}]]>
+        order by id
+    </select>
+
+    <select id="selectStartLimit" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from <include refid="Table_Name" /> where
+        <![CDATA[  id >= #{startId} ]]>
+        order by id
+        limit #{size}
+    </select>
+
+    <select id="maxId" resultType="java.lang.Long">
+        select max(id) from <include refid="Table_Name" />
+    </select>
 
     <sql id="Where_Sql" >
         where 1 = 1
@@ -123,13 +122,6 @@
         <include refid="Where_Sql"></include>
     </select>
 
-    <select id="listByIds" resultMap="BaseResultMap" >
-        select
-        <include refid="Base_Column_List" />
-        from <include refid="Table_Name" />
-        <include refid="Where_Sql"></include>
-    </select>
-
     <select id="countByWhere" resultType="java.lang.Long">
         select count(1) from <include refid="Table_Name" />
         <include refid="Where_Sql"></include>
@@ -144,11 +136,6 @@
 
     <!-- 比较危险，慎用 -->
     <delete id="deleteByWhere">
-        delete from <include refid="Table_Name" />
-        <include refid="Where_Sql"></include>
-    </delete>
-
-    <delete id="deleteByIds">
         delete from <include refid="Table_Name" />
         <include refid="Where_Sql"></include>
     </delete>

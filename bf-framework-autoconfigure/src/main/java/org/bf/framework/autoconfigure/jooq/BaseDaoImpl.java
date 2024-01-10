@@ -2,16 +2,17 @@ package org.bf.framework.autoconfigure.jooq;
 
 import org.bf.framework.common.base.BaseDao;
 import org.bf.framework.common.base.BaseEntity;
-import org.bf.framework.common.result.PageResult;
 import org.bf.framework.common.util.CollectionUtils;
 import org.bf.framework.common.util.StringUtils;
 import org.jooq.*;
 import org.jooq.impl.DAOImpl;
 import org.jooq.impl.DSL;
 
-import static org.jooq.impl.DSL.*;
 import java.util.Collection;
 import java.util.List;
+
+import static org.jooq.impl.DSL.field;
+import static org.jooq.impl.DSL.max;
 
 public abstract class BaseDaoImpl<R extends UpdatableRecord<R>,E extends BaseEntity<PK>,PK extends Number> extends DAOImpl<R, E, PK> implements BaseDao<PK,E> {
     protected BaseDaoImpl(Table<R> table, Class<E> type) {
@@ -44,12 +45,12 @@ public abstract class BaseDaoImpl<R extends UpdatableRecord<R>,E extends BaseEnt
                 .fetchOne(mapper());
     }
     @Override
-    public List<E> listByWhere(PageResult<E> p) {
+    public List<E> listByWhere(E p,Number size,Number offset) {
         return ctx()
                 .selectFrom(getTable())
-                .where(whereCondition(p.getBody()))
-                .limit(p.getSize())
-                .offset(p.getOffset())
+                .where(whereCondition(p))
+                .limit(size)
+                .offset(offset)
                 .fetch(mapper());
     }
 
@@ -68,31 +69,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecord<R>,E extends BaseEnt
                 .deleteFrom(getTable())
                 .where(whereCondition(e))
                 .execute();
-    }
-
-    @Override
-    public void deleteById(PK id) {
-        super.deleteById(id);
-    }
-
-    @Override
-    public void deleteByIds(Collection<PK> ids) {
-        super.deleteById(ids);
-    }
-    @Override
-    public List<E> listByIds(Collection<PK> ids) {
-        Field<PK> idField = pk();
-        if(CollectionUtils.isEmpty(ids)) {
-            return null;
-        }
-        return ctx()
-                .selectFrom(getTable())
-                .where(idField.in(ids))
-                .fetch(mapper());
-    }
-    @Override
-    public E getById(PK id) {
-        return super.findById(id);
     }
 
     @Override
@@ -144,7 +120,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecord<R>,E extends BaseEnt
         Condition cd = dynamic == null ? DSL.trueCondition() : dynamic;
         Field<PK> idField = pk();
         if (getId(e) != null) { //id = xxx
-            cd.and(idField.eq(getId(e)));
+            cd = cd.and(idField.eq(getId(e)));
         }
         if(CollectionUtils.isNotEmpty(e.getIds())) {
             Field<?> inField;
@@ -153,7 +129,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecord<R>,E extends BaseEnt
             } else {
                 inField = idField;
             }
-            cd.and(inField.in(e.getIds()));
+            cd = cd.and(inField.in(e.getIds()));
         }
         return cd;
     }

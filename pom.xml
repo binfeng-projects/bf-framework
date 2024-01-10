@@ -33,6 +33,8 @@
         <jar.hutool>5.8.21</jar.hutool>
         <jar.xml>4.0.0</jar.xml>
         <jar.redisson>3.16.3</jar.redisson>
+        <jar.mybatis-spring>3.0.3</jar.mybatis-spring>
+        <jar.mybatis>3.5.14</jar.mybatis>
         <!-- autoconfig的依赖 -->
         <jar.apollo>2.1.0</jar.apollo>
         <jar.xxl>2.4.0</jar.xxl>
@@ -78,8 +80,33 @@
             </dependency>
             <dependency>
                 <groupId>org.bf.framework</groupId>
+                <artifactId>bf-framework-starter-mybatis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>${jar.mybatis-spring}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis</artifactId>
+                <version>${jar.mybatis}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bf.framework</groupId>
                 <artifactId>bf-framework-starter-caffeine</artifactId>
                 <version>${project.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.errorprone</groupId>
+                        <artifactId>error_prone_annotations</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.checkerframework</groupId>
+                        <artifactId>checker-qual</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.bf.framework</groupId>
@@ -380,6 +407,10 @@
                         <groupId>io.projectreactor</groupId>
                         <artifactId>reactor-core</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>io.netty</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -405,16 +436,18 @@
                         <groupId>com.google.code.gson</groupId>
                         <artifactId>gson</artifactId>
                     </exclusion>
-                    <exclusion>
-                        <groupId>io.netty</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.xuxueli</groupId>
                 <artifactId>xxl-job-core</artifactId>
                 <version>${jar.xxl}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>io.netty</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <!-- 云存储 -->
             <dependency>
@@ -499,6 +532,10 @@
                     <exclusion>
                         <groupId>commons-logging</groupId>
                         <artifactId>*</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.bouncycastle</groupId>
+                        <artifactId>bcpkix-jdk15on</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -596,6 +633,10 @@
                         <groupId>com.google.guava</groupId>
                         <artifactId>*</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>io.netty</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -682,6 +723,15 @@
                     <exclusion>
                         <groupId>com.twitter</groupId>
                         <artifactId>chill-java</artifactId>
+                    </exclusion>
+                    <!-- dubbo 有重复-->
+                    <exclusion>
+                        <groupId>org.javassist</groupId>
+                        <artifactId>javassist</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-compress</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -867,6 +917,10 @@
                         <groupId>jakarta.xml.bind</groupId>
                         <artifactId>jakarta.xml.bind-api</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.zookeeper</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <!-- hbase -->
@@ -922,7 +976,7 @@
                     </exclusion>
                     <exclusion>
                         <groupId>org.apache.zookeeper</groupId>
-                        <artifactId>zookeeper</artifactId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>io.dropwizard.metrics</groupId>
@@ -982,7 +1036,7 @@
                     </exclusion>
                     <exclusion>
                         <groupId>org.apache.zookeeper</groupId>
-                        <artifactId>zookeeper</artifactId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>io.dropwizard.metrics</groupId>
@@ -1367,12 +1421,16 @@
                         <artifactId>*</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <groupId>org.springframework.boot</groupId>
                         <artifactId>*</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>com.google.guava</groupId>
-                        <artifactId>guava</artifactId>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.springframework.data</groupId>
+                        <artifactId>spring-data-hadoop-config</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>com.google.inject.extensions</groupId>
@@ -1383,56 +1441,28 @@
                         <artifactId>*</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>org.apache.commons</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>commons-io</groupId>
                         <artifactId>*</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>commons-cli</groupId>
-                        <artifactId>commons-cli</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>org.apache.hadoop</groupId>
                         <artifactId>hadoop-auth</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>javax.xml.bind</groupId>
-                        <artifactId>jaxb-api</artifactId>
+                        <groupId>org.codehaus.jettison</groupId>
+                        <artifactId>jettison</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-messaging</artifactId>
+                        <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-compress</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-aop</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-tx</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-jdbc</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-context</artifactId>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>io.projectreactor</groupId>
                         <artifactId>reactor-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.yaml</groupId>
-                        <artifactId>snakeyaml</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>

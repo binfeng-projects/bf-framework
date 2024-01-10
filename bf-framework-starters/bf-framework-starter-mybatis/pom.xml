@@ -6,15 +6,19 @@
         <artifactId>bf-framework-starters</artifactId>
         <version>${revision}</version>
     </parent>
-    <artifactId>bf-framework-starter-jooq</artifactId>
+    <artifactId>bf-framework-starter-mybatis</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.bf.framework</groupId>
             <artifactId>bf-framework-starter-jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jooq</groupId>
-            <artifactId>jooq</artifactId>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
         </dependency>
     </dependencies>
 </project>

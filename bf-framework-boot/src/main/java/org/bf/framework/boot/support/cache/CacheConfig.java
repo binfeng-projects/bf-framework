@@ -40,7 +40,7 @@ public class CacheConfig {
     @Bean(PRIMARY_REMOTE_CACHE)
     @OnMissingBean(name=PRIMARY_REMOTE_CACHE)
     @OnBean(name = PRIMARY_REMOTE_CACHE_MANAGER)
-    public RemoteCache primaryRemoteCache( @Qualifier(PRIMARY_REMOTE_CACHE_MANAGER) CacheManager cm){
+    public RemoteCache primaryRemoteCache(@Qualifier(PRIMARY_REMOTE_CACHE_MANAGER) CacheManager cm){
         Collection<String> cacheNames = cm.getCacheNames();
         String first = cacheNames.stream().findFirst().get();
         return new RemoteCache(CollectionUtils.newArrayList(cm.getCache(first)));

@@ -17,19 +17,19 @@ public class Test${daoProxy} extends BaseProxyTest<${pkType},${clientDto},${enti
 
     @Test
     public void testSave(){
-        ${clientDto} p = generatePojo();
+        ${clientDto} p = genePojo();
         info(p);
         daoProxy.save(p);
     }
 
     @Test
     public void testEdit(){
-        ${clientDto} p = generatePojo();
+        ${clientDto} p = genePojo();
         p.setId(pkId);
         info(p);
         daoProxy.edit(p);
     }
-    public static ${clientDto} generatePojo()
+    public static ${clientDto} genePojo()
     {
         ${clientDto} p = new ${clientDto}();
     [#list table.columns as field]

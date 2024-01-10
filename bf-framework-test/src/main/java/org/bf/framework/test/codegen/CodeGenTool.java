@@ -1,6 +1,5 @@
 package org.bf.framework.test.codegen;
 
-import cn.hutool.core.lang.Snowflake;
 import jakarta.xml.bind.JAXB;
 import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.boot.support.Middleware;
@@ -9,7 +8,6 @@ import org.bf.framework.boot.util.YamlUtil;
 import org.bf.framework.common.util.CollectionUtils;
 import org.bf.framework.common.util.MapUtils;
 import org.bf.framework.common.util.StringUtils;
-import org.bf.framework.test.jooq.DatasourceJavaGenerator;
 import org.bf.framework.test.jooq.JooqJavaGenerator;
 import org.bf.framework.test.jooq.JooqJavaStrategy;
 import org.jooq.codegen.GenerationTool;
@@ -21,9 +19,12 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static org.bf.framework.boot.constant.FrameworkConst.*;
+import static org.bf.framework.boot.constant.FrameworkConst.BF;
+import static org.bf.framework.boot.constant.FrameworkConst.DOT;
 import static org.bf.framework.boot.constant.MiddlewareConst.*;
 
 /**
@@ -97,21 +98,21 @@ public class CodeGenTool extends JavaGenerator {
         for (String middlewarePrefix : usedMiddlewarePrefix) {
             currentMiddlewareType = getMiddleTypeWithPrefix(middlewarePrefix);
             YamlUtil.parsePrefix(middlewarePrefix,null,configMap -> {
-                Configuration cfg = null;
+                Map<String, Object> mysqlConfig = null;
                 if (PREFIX_DATASOURCE.equals(middlewarePrefix)) {
-                    cfg = geneJooqConfig(currentMiddlewareType,configMap);
+                    mysqlConfig = configMap;
                 } else {
                     String codeGenRef = (String) configMap.get(YamlUtil.CODE_GEN_REF);
                     if (StringUtils.isBlank(codeGenRef)) {
                         return;
                     }
-                    Map<String, Object> mysqlConfig = MapUtils.newHashMap();
+                    mysqlConfig = MapUtils.newHashMap();
                     SpringUtil.bind(PREFIX_DATASOURCE + DOT + codeGenRef, mysqlConfig);
                     if(MapUtils.isEmpty(mysqlConfig)) {
                         return;
                     }
-                    cfg = geneJooqConfig(DEFAULT,mysqlConfig);
                 }
+                Configuration cfg = geneJooqConfig(currentMiddlewareType,mysqlConfig);
                 if(null != cfg) {
                     try {
                         GenerationTool.generate(cfg);
@@ -214,12 +215,11 @@ public class CodeGenTool extends JavaGenerator {
             String includeTable = String.valueOf(configMap.get(YamlUtil.CODE_GEN_INCLUDE));
             String excludeTable = String.valueOf(configMap.get(YamlUtil.CODE_GEN_EXCLUDE));
             String schema = jdbcUrl.substring(jdbcUrl.lastIndexOf('/') + 1).split("\\?")[0];
-            ClassPathResource file = new ClassPathResource("jooq-" + middleWareType + ".xml");
+            ClassPathResource file = new ClassPathResource("jooq-default.xml");
 //        String fileStr = file.getContentAsString(StandardCharsets.UTF_8);
             String packageName = CFG.getPackageCore() + ".jooq.";
             Class<?> generateClass = JooqJavaGenerator.class;
             if("datasource".equals(middleWareType)) {
-                generateClass = DatasourceJavaGenerator.class;
                 packageName = packageName + schema;
             } else {
 //                防止冲突，覆盖已经生成的代码

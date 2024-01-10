@@ -124,7 +124,7 @@ public class BaseDaoProxy<PK extends Number,DTO extends BaseDTO<PK>,Entity exten
         if(pager.getTotal() <= 0){
             return pager;
         }
-        pager.setRecords(dao.listByWhere(pager));
+        pager.setRecords(dao.listByWhere(e,pager.getSize(),pager.getOffset()));
         return pager;
     }
 
@@ -200,13 +200,19 @@ public class BaseDaoProxy<PK extends Number,DTO extends BaseDTO<PK>,Entity exten
             return pageResult;
         }
         pageResult.setRecords(convert.entityToDtoList(result.getRecords()));
-        pageResult.setTotal(pageResult.getTotal());
+        pageResult.setTotal(result.getTotal());
         return pageResult;
     }
 
 //------------------------------所以根据id和id列表但查询都会校验正数和非空------------------------
     public Entity getEntityById(@NotNull @Positive PK id) {
-        return dao.getById(id);
+        try {
+            Entity e = entityClass.getDeclaredConstructor().newInstance();
+            e.setId(id);
+            return dao.getOneByWhere(e);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public DTO getById(@NotNull @Positive PK id) {
@@ -214,7 +220,13 @@ public class BaseDaoProxy<PK extends Number,DTO extends BaseDTO<PK>,Entity exten
     }
 
     public List<Entity> listEntityByIds(@NotEmpty @Size(max = QUERY_SIZE) Collection<@NotNull @Positive PK> ids) {
-        return dao.listByIds(ids);
+        try {
+            Entity e = entityClass.getDeclaredConstructor().newInstance();
+            e.setIds(ids);
+            return dao.listByWhere(e,QUERY_SIZE,0);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public List<DTO> listByIds(@NotEmpty @Size(max = QUERY_SIZE) Collection<@NotNull @Positive PK> ids) {
@@ -222,11 +234,23 @@ public class BaseDaoProxy<PK extends Number,DTO extends BaseDTO<PK>,Entity exten
     }
 
     public void removeById(@NotNull @Positive PK id) {
-        dao.deleteById(id);
+        try {
+            Entity e = entityClass.getDeclaredConstructor().newInstance();
+            e.setId(id);
+            dao.deleteByWhere(e);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public void removeByIds(@NotEmpty @Size(max = BATCH_SIZE) Collection<@NotNull @Positive PK> ids) {
-        dao.deleteByIds(ids);
+        try {
+            Entity e = entityClass.getDeclaredConstructor().newInstance();
+            e.setIds(ids);
+            dao.deleteByWhere(e);
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**

@@ -1,8 +1,6 @@
 package org.bf.framework.common.base;
 
 
-import org.bf.framework.common.result.PageResult;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -40,13 +38,6 @@ public interface BaseDao<PK extends Number,E extends BaseEntity<PK>> extends Sta
      * @return
      */
     E getOneByWhere(E e);
-    void deleteById(PK id);
-    /**
-     * 返回单个对象
-     * @param id 根据id查
-     * @return
-     */
-    E getById(PK id);
     /**
      * 本着最小sql的原则而提供,支持单个ID作条件更新，批量ID作条件更新
      * @param e 按需拼接update字段
@@ -56,13 +47,10 @@ public interface BaseDao<PK extends Number,E extends BaseEntity<PK>> extends Sta
 
     /**
      * 返回单个列表
-     * @param p 按需拼接where条件,并限制分页
+     * @param p 按需拼接where条件
      * @return
      */
-    List<E> listByWhere(PageResult<E> p);
-
-    void deleteByIds(Collection<PK> ids);
-    List<E> listByIds(Collection<PK> ids);
+    List<E> listByWhere(E p,Number size,Number offset);
     Long maxIdByWhere(E e);
 //    Integer logicRemoveByWhere(T po);
 }
