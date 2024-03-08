@@ -1,6 +1,5 @@
 package org.bf.framework.test.jooq;
 
-import freemarker.template.Configuration;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.autoconfigure.jooq.BaseDaoImpl;
@@ -10,7 +9,6 @@ import org.bf.framework.autoconfigure.mybatis.MybatisAutoConfig;
 import org.bf.framework.boot.base.BaseConvert;
 import org.bf.framework.boot.base.BaseDaoProxy;
 import org.bf.framework.boot.base.PermCheck;
-import org.bf.framework.boot.util.FreemarkerUtil;
 import org.bf.framework.boot.util.SpringUtil;
 import org.bf.framework.common.base.BaseDTO;
 import org.bf.framework.common.base.BaseDao;
@@ -36,7 +34,6 @@ import org.jooq.tools.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,7 +42,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -62,21 +58,8 @@ public class JooqJavaGenerator extends JavaGenerator {
     public static final String PUBLIC = "public ";
 
     protected static Map<String, TemplateSchema> schemaModelMap = MapUtils.newConcurrentHashMap();
-    protected static FreemarkerUtil freemarkerUtil;
     protected static Map<String, Map<String, Object>> tableModelMap = MapUtils.newConcurrentHashMap();
 
-    static {
-        try {
-            Configuration cfg = new Configuration(Configuration.VERSION_2_3_32);
-            cfg.setSettings(new ClassPathResource("freemarker.properties").getInputStream());
-            cfg.setEncoding(Locale.SIMPLIFIED_CHINESE, "UTF-8");
-            cfg.setClassForTemplateLoading(JooqJavaGenerator.class, "/templates");
-            cfg.setDefaultEncoding("UTF-8");
-            freemarkerUtil = new FreemarkerUtil(cfg);
-        } catch (Exception e) {
-
-        }
-    }
     /**
      * 控制整个流程
      */

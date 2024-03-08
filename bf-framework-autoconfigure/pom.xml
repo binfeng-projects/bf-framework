@@ -316,7 +316,63 @@
             <artifactId>hive-contrib</artifactId>
             <optional>true</optional>
         </dependency>
-
+        <!-- sentinel-->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-core</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <!-- 注解支持 -->
+            <artifactId>sentinel-annotation-aspectj</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <!-- 和控制台通信-->
+            <artifactId>sentinel-transport-simple-http</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <!-- Apollo数据源-->
+            <artifactId>sentinel-datasource-apollo</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-redis</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-zookeeper</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!--
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-datasource-nacos</artifactId>
+            <optional>true</optional>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <!-- 热点参数限流  -->
+            <artifactId>sentinel-parameter-flow-control</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-apache-dubbo3-adapter</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

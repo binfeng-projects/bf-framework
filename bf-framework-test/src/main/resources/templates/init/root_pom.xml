@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.bf.parent</groupId>
+        <artifactId>bf-parent</artifactId>
+        <version>0.0.8-SNAPSHOT</version>
+    </parent>
+    <groupId>${groupId}</groupId>
+    <artifactId>${appName}</artifactId>
+    [#noparse]<version>${revision}</version>[/#noparse]
+    <packaging>pom</packaging>
+    <properties>
+        <!-- 自身模块 -->
+        <revision>1.0.0-SNAPSHOT</revision>
+        <!-- 测试和util -->
+        <bf-framework.version>0.0.8-SNAPSHOT</bf-framework.version>
+        <!-- 中间件集成 -->
+        <middleware-integration.version>1.0.0-SNAPSHOT</middleware-integration.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!--自身模块 -->
+            <dependency>
+                <groupId>${groupId}</groupId>
+                <artifactId>${appName}-client</artifactId>
+                [#noparse]<version>${project.version}</version>[/#noparse]
+            </dependency>
+            <dependency>
+                <groupId>${groupId}</groupId>
+                <artifactId>${appName}-core</artifactId>
+                [#noparse]<version>${project.version}</version>[/#noparse]
+            </dependency>
+            <dependency>
+                <groupId>${groupId}</groupId>
+                <artifactId>${appName}-server</artifactId>
+                [#noparse]<version>${project.version}</version>[/#noparse]
+            </dependency>
+            <dependency>
+                <groupId>${middlewareGroupId}</groupId>
+                <artifactId>${middlewareArtifactId}</artifactId>
+                [#noparse]<version>${middleware-integration.version}</version>[/#noparse]
+            </dependency>
+            <dependency>
+                <groupId>org.bf.framework</groupId>
+                <artifactId>bf-framework-test</artifactId>
+                [#noparse]<version>${bf-framework.version}</version>[/#noparse]
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <modules>
+        <module>${appName}-client</module>
+        <module>${appName}-core</module>
+        <module>${appName}-server</module>
+    </modules>
+</project>

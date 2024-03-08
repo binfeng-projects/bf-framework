@@ -1,0 +1,2 @@
+#spring.config.import引入的属性无法被通用application.yml覆盖，把我放在spring.config.import最后，让我来覆盖他们，last-win
+#但是优先级低于application-profile.active,也就是说通用覆盖用我来，环境覆盖放在application-profile.active中就好啦

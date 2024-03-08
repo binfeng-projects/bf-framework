@@ -102,6 +102,11 @@ bf:
             ### 执行器端口号 [选填]：小于等于0则自动获取；默认端口为9999，单机部署多个执行器时，注意要配置不同执行器端口；
             port: 9999
             logpath: ${logging.file.path}/xxl-job
+    sentinel: #配置了dashboard才会生效autoconfig
+#        dashboard:
+        dataSourceType: apollo
+        dataSourceRef: test
+        namespace: 02.common-sentinel # 如果数据源是Redis，则这个key代表订阅channel
     cache: #本地cache CaffeineSpec
         enabled: 'half-min,min,half-hour,hour,two-hour,day'
         default:

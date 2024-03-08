@@ -6,6 +6,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.bf.framework.boot.annotation.auto.EnableConfig;
 import org.bf.framework.boot.annotation.auto.EnableConfigHandler;
 import org.bf.framework.boot.support.Middleware;
+import org.bf.framework.boot.util.SpringUtil;
 import org.bf.framework.boot.util.YamlUtil;
 import org.bf.framework.common.util.CollectionUtils;
 import org.bf.framework.common.util.StringUtils;
@@ -15,6 +16,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.PropertyMapper;
+import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -28,8 +30,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-import static org.bf.framework.boot.constant.FrameworkConst.*;
-import static org.bf.framework.boot.constant.MiddlewareConst.*;
+import static org.bf.framework.boot.constant.MiddlewareConst.PREFIX_KAFKA;
 
 @AutoConfiguration
 @ConditionalOnClass(KafkaTemplate.class)
@@ -53,7 +54,7 @@ public class KafkaAutoConfig implements EnableConfigHandler<KafkaProperties> {
         try {
             KafkaProperties cfg = (KafkaProperties)YamlUtil.getConfigBind(map);
             //---------------------------producer & template --------------------------
-            Map<String, Object> producerProperties = cfg.buildProducerProperties();
+            Map<String, Object> producerProperties = cfg.buildProducerProperties(SpringUtil.getBean(SslBundles.class));
             producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, cfg.getBootstrapServers());
 //            producerProperties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "PLAINTEXT");
             DefaultKafkaProducerFactory<Object, Object> kafkaProducerFactory = new DefaultKafkaProducerFactory<>(producerProperties);
@@ -69,7 +70,7 @@ public class KafkaAutoConfig implements EnableConfigHandler<KafkaProperties> {
             result.add(new Middleware().setPrefix(PREFIX).setSchemaName(schema).setType(KafkaTemplate.class).setBean(kafkaTemplate));
 
             //--------------------------- Consumer--------------------------
-            Map<String, Object> consumerProperties = cfg.buildConsumerProperties();
+            Map<String, Object> consumerProperties = cfg.buildConsumerProperties(SpringUtil.getBean(SslBundles.class));
             consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, cfg.getBootstrapServers());
             DefaultKafkaConsumerFactory<Object, Object> consumerFactory = new DefaultKafkaConsumerFactory<>(consumerProperties);
             ConcurrentKafkaListenerContainerFactory<Object, Object> listenerFactory = new ConcurrentKafkaListenerContainerFactory<>();

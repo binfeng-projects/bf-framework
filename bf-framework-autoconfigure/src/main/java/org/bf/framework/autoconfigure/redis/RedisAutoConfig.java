@@ -28,7 +28,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.boot.ssl.SslBundle;
-import org.springframework.boot.ssl.SslBundles;
 import org.springframework.boot.ssl.SslOptions;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
@@ -57,7 +56,8 @@ import java.util.stream.Collectors;
 import static org.bf.framework.autoconfigure.redis.RedisTopicListener.LISTENER_METHOD;
 import static org.bf.framework.autoconfigure.redis.SyncCacheListener.TOPIC_SYNC_CACHE;
 import static org.bf.framework.boot.constant.FrameworkConst.DOT;
-import static org.bf.framework.boot.constant.MiddlewareConst.*;
+import static org.bf.framework.boot.constant.MiddlewareConst.PREFIX_CACHE;
+import static org.bf.framework.boot.constant.MiddlewareConst.PREFIX_REDIS;
 
 @AutoConfiguration
 @ConditionalOnClass(RedisOperations.class)
@@ -155,10 +155,10 @@ public class RedisAutoConfig implements EnableConfigHandler<RedisProperties> {
     }
     public static List<Middleware> processRedisson(String schema,RedisProperties redisProperties) {
         List<Middleware> result = CollectionUtils.newArrayList();
-        RedisConfiguration redisConfig = getRedisConfiguration(redisProperties);
         if(!redisProperties.isUseRedisson()) {
             return result;
         }
+        RedisConfiguration redisConfig = getRedisConfiguration(redisProperties);
         //redission
         Config redissionConfig = new Config();
         if (redisConfig instanceof RedisClusterConfiguration) {
@@ -267,7 +267,7 @@ public class RedisAutoConfig implements EnableConfigHandler<RedisProperties> {
         return null;
     }
     //------------------------------------------- LettuceClientConfiguration-------------------------------
-    private static RedisConfiguration getRedisConfiguration(RedisProperties properties) {
+    public static RedisConfiguration getRedisConfiguration(RedisProperties properties) {
         RedisConfiguration cfg = getSentinelConfig(properties);
         if (cfg == null) {
             cfg = getClusterConfiguration(properties);

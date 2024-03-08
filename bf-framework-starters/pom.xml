@@ -30,5 +30,6 @@
         <module>bf-framework-starter-flink</module>
         <module>bf-framework-starter-batch</module>
         <module>bf-framework-starter-apollo</module>
+        <module>bf-framework-starter-sentinel</module>
     </modules>
 </project>

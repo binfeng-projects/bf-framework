@@ -3,9 +3,11 @@ package org.bf.framework.test.codegen;
 import jakarta.xml.bind.JAXB;
 import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.boot.support.Middleware;
+import org.bf.framework.boot.util.FreemarkerUtil;
 import org.bf.framework.boot.util.SpringUtil;
 import org.bf.framework.boot.util.YamlUtil;
 import org.bf.framework.common.util.CollectionUtils;
+import org.bf.framework.common.util.IOUtils;
 import org.bf.framework.common.util.MapUtils;
 import org.bf.framework.common.util.StringUtils;
 import org.bf.framework.test.jooq.JooqJavaGenerator;
@@ -19,9 +21,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.bf.framework.boot.constant.FrameworkConst.BF;
 import static org.bf.framework.boot.constant.FrameworkConst.DOT;
@@ -37,14 +37,78 @@ public class CodeGenTool extends JavaGenerator {
     //当前正在执行哪个中间件类型的代码自动生成,默认datasource
     public static String currentMiddlewareType = PREFIX_DATASOURCE;
     private JavaWriter middlewareHolderOut;
+    public static FreemarkerUtil freemarkerUtil;
+    static {
+        try {
+            freemarker.template.Configuration cfg = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_32);
+            cfg.setSettings(new ClassPathResource("freemarker.properties").getInputStream());
+            cfg.setEncoding(Locale.SIMPLIFIED_CHINESE, "UTF-8");
+            cfg.setClassForTemplateLoading(JooqJavaGenerator.class, "/templates");
+            cfg.setDefaultEncoding("UTF-8");
+            freemarkerUtil = new FreemarkerUtil(cfg);
+        } catch (Exception e) {
 
+        }
+    }
+    public static void initProject(String workspace,String appName,String corePackage,String middlewareGroupId,String middlewareArtifactId){
+        if(StringUtils.isBlank(workspace) || StringUtils.isBlank(appName) || StringUtils.isBlank(corePackage)) {
+            throw new RuntimeException("appName and workspace path cannot empty");
+        }
+        String basePath = workspace + "/" + appName ;
+        Map<String, Object> model = new HashMap<>();
+        if (org.jooq.tools.StringUtils.isBlank(middlewareGroupId)) {
+            middlewareGroupId = "com.bf.middleware";
+        }
+        if (org.jooq.tools.StringUtils.isBlank(middlewareArtifactId)) {
+            middlewareArtifactId = "binfeng-middleware";
+        }
+        model.put("middlewareGroupId",middlewareGroupId);
+        model.put("middlewareArtifactId",middlewareArtifactId);
+        model.put("corePackage",corePackage);
+        String groupId = corePackage.substring(0,corePackage.lastIndexOf("."));
+        model.put("groupId",groupId);
+        model.put("appName",appName);
+        String rootPackage = groupId.substring(0,groupId.lastIndexOf("."));
+        model.put("rootPackage",rootPackage);
+        //root
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/root_pom.xml",model),new File(basePath, "pom.xml"));
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/.gitignore",model),new File(basePath, ".gitignore"));
+        //client
+        String clientPath = basePath + "/" + appName + "-client";
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/client_pom.xml",model),clientPath, "pom.xml");
+        //core
+        String corePath = basePath + "/" + appName + "-core";
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_pom.xml",model),corePath, "pom.xml");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_constant.java",model),corePath + "/src/main/java/" + corePackage.replace(".","/"), "Constant.java");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/spring.factories",model),corePath + "/src/main/resources/META-INF","spring.factories");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core.yml",model),corePath + "/src/main/resources", appName + "-core.yml");
+        model.put("env","dev");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_env.yml",model),corePath + "/src/main/resources", appName + "-core-dev.yml");
+        model.put("env","test");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_env.yml",model),corePath + "/src/main/resources", appName + "-core-test.yml");
+        model.put("env","pre");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_env.yml",model),corePath + "/src/main/resources", appName + "-core-pre.yml");
+        model.put("env","prod");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_env.yml",model),corePath + "/src/main/resources", appName + "-core-prod.yml");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_test_application.yml",model),corePath + "/src/test/resources", "application.yml");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_test_gencode.java",model),corePath + "/src/test/java/" + corePackage.replace(".","/") + "/test", "TestGenCode.java");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_test_simplejunit.java",model),corePath + "/src/test/java/" + corePackage.replace(".","/"), "SimpleJunitTest.java");
+
+        //server
+        String serverPath = basePath + "/" + appName + "-server";
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/server_pom.xml",model),serverPath, "pom.xml");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/server_appmain.java",model),serverPath + "/src/main/java/" + groupId.replace(".","/"), "AppMain.java");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/server.yml",model),serverPath + "/src/main/resources", appName + ".yml");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/server_application.yml",model),serverPath + "/src/main/resources", "application.yml");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/server_application_env.yml",model),serverPath + "/src/main/resources", "application-dev.yml");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/server_application_env.yml",model),serverPath + "/src/main/resources", "application-test.yml");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/server_application_env.yml",model),serverPath + "/src/main/resources", "application-pre.yml");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/server_application_env.yml",model),serverPath + "/src/main/resources", "application-prod.yml");
+    }
     public CodeGenTool(GenConfig cfg) {
         if(StringUtils.isBlank(cfg.getPackageCore())) {
             throw new RuntimeException("packageCore cannot empty");
         }
-//        if(StringUtils.isBlank(cfg.getAppName())) {
-//            throw new RuntimeException("appName cannot empty");
-//        }
         CFG = cfg;
         setStrategy(new JooqJavaStrategy());
         try {
@@ -54,10 +118,9 @@ public class CodeGenTool extends JavaGenerator {
 
         }
         if(CollectionUtils.isEmpty(CFG.getMiddlewarePrefix())){
-            CFG.setMiddlewarePrefix(CollectionUtils.newArrayList(PREFIX_DATASOURCE,PREFIX_CACHE));
+            CFG.setMiddlewarePrefix(ALL_MIDDLEWARE_TYPE);
         }
     }
-
     /**
      * 以下都是不允许覆盖的
      */

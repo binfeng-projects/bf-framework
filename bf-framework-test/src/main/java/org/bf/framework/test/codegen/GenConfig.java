@@ -11,7 +11,5 @@ import java.util.List;
 @FieldNameConstants
 public class GenConfig {
     private String packageCore;
-    private String appName;
-    private String workspace;
     private List<String> middlewarePrefix;
 }

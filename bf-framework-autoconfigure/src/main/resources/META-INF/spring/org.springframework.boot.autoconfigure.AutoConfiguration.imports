@@ -17,4 +17,5 @@ org.bf.framework.autoconfigure.hive.HiveAutoConfig
 org.bf.framework.autoconfigure.yarn.YarnAutoConfig
 org.bf.framework.autoconfigure.batch.BatchAutoConfig
 org.bf.framework.autoconfigure.actuator.ActuatorAutoConfig
+org.bf.framework.autoconfigure.sentinel.SentinelAutoConfig
 org.bf.framework.autoconfigure.FrameworkAutoConfig

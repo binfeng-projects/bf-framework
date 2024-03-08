@@ -1,6 +1,11 @@
 package org.bf.framework.boot.constant;
 
-import static org.bf.framework.boot.constant.FrameworkConst.*;
+import org.bf.framework.common.util.CollectionUtils;
+
+import java.util.List;
+
+import static org.bf.framework.boot.constant.FrameworkConst.BF;
+import static org.bf.framework.boot.constant.FrameworkConst.DOT;
 
 /**
  * 中间件用到的一些常量
@@ -75,8 +80,15 @@ public interface MiddlewareConst {
     //----------------------------------- batch -----------------------------------
     String PREFIX_BATCH = BF + DOT + "batch";
     String BEAN_BATCHPROXY = "_BatchProxy";
+    //---------------------------- sentinel -------------------------------
+    String PREFIX_SENTINEL = BF + DOT + "sentinel";
     //----------------------------------- 通用 -----------------------------------
     String ENABLED = "enabled";
     String URL = "url";
     String TYPE = "type";
+
+    List<String> ALL_MIDDLEWARE_TYPE = CollectionUtils.newArrayList(PREFIX_DATASOURCE
+                ,PREFIX_CACHE,PREFIX_REDIS,PREFIX_ELASTICSEARCH,PREFIX_KAFKA,
+                PREFIX_STORAGE,PREFIX_VMS,PREFIX_ZOOKEEPER,PREFIX_FLINK,PREFIX_HADOOP,
+                PREFIX_YARN,PREFIX_HBASE,PREFIX_HIVE,PREFIX_BATCH,PREFIX_SENTINEL);
 }

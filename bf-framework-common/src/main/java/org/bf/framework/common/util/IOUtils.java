@@ -3,9 +3,7 @@ package org.bf.framework.common.util;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ArrayUtil;
 
-import java.io.Closeable;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 
 public class IOUtils {
     public static void closeQuietly(Closeable c){
@@ -26,5 +24,25 @@ public class IOUtils {
     }
     public static byte[] toByteArray(InputStream in){
         return IoUtil.readBytes(in);
+    }
+    public static void writeFile(String data,File file){
+        try {
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file));
+            writer.write(data);
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static void writeFile(String data,String parent,String child){
+        try {
+            File parentFile = new File(parent);
+            parentFile.mkdirs();
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(new File(parentFile,child)));
+            writer.write(data);
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -5,3 +5,8 @@
 3. 有对云服务厂商的支持，例如对象存储服务（目前支持AWS s3，阿里云OSS，腾讯云COS），语音服务（阿里云和腾讯云VMS）。
 4. 配合Prometheus和grafana,支持应用监控服务。支持链路追踪中间件skywalking
 5. 支持任务job框架xxl-job，支持spring轻量级批处理框架spring-batch
+
+
+2024-03
+1. 支持限流中间件sentinel
+2. 代码生成工具支持脚手架功能(初始化一个新工程，类似SpringBootInitializer),再配合原有crud生成功能,简化项目搭建和基础代表编写

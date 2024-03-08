@@ -85,7 +85,7 @@ import static org.bf.framework.boot.constant.MiddlewareConst.*;
 @AutoConfiguration(after = { HadoopAutoConfig.class,BatchAutoConfig.class})
 @ConditionalOnMissingBean(value = YarnAutoConfig.class)
 @EnableConfig(YarnAutoConfig.class)
-@ConditionalOnClass({YarnConfiguration.class})
+@ConditionalOnClass({YarnConfiguration.class,ContainerClusterStateMachineConfiguration.class})
 @Import(ContainerClusterStateMachineConfiguration.class)
 @Slf4j
 public class YarnAutoConfig implements EnableConfigHandler<SpringYarnProperties>, ApplicationEventPublisherAware {

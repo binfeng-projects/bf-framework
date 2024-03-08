@@ -8,10 +8,10 @@ import org.apache.flink.connector.kafka.sink.KafkaSinkBuilder;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.KafkaSourceBuilder;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
-import org.bf.framework.autoconfigure.hadoop.HadoopProperties;
 import org.bf.framework.boot.annotation.auto.EnableConfig;
 import org.bf.framework.boot.annotation.auto.EnableConfigHandler;
 import org.bf.framework.boot.support.Middleware;
+import org.bf.framework.boot.util.SpringUtil;
 import org.bf.framework.boot.util.YamlUtil;
 import org.bf.framework.common.util.CollectionUtils;
 import org.bf.framework.common.util.MapUtils;
@@ -21,6 +21,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import org.springframework.boot.ssl.SslBundles;
 
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class FlinkAutoConfig implements EnableConfigHandler<FlinkProperties> {
 //                        // 从最末尾位点开始消费
 //                        .setStartingOffsets(OffsetsInitializer.latest());
                 sourceBuilder.setStartingOffsets(OffsetsInitializer.earliest());
-                Map<String, Object> consumerProps = cfg.buildConsumerProperties();
+                Map<String, Object> consumerProps = cfg.buildConsumerProperties(SpringUtil.getBean(SslBundles.class));
                 if(MapUtils.isNotEmpty(consumerProps)) {
                     consumerProps.forEach((k,v) -> sourceBuilder.setProperty(k,String.valueOf(v)));
                 }
@@ -124,7 +125,7 @@ public class FlinkAutoConfig implements EnableConfigHandler<FlinkProperties> {
 //                                .build()
 //                        )
                         .setDeliveryGuarantee(DeliveryGuarantee.AT_LEAST_ONCE);
-                Map<String, Object> producerProps = cfg.buildProducerProperties();
+                Map<String, Object> producerProps = cfg.buildProducerProperties(SpringUtil.getBean(SslBundles.class));
                 if(MapUtils.isNotEmpty(producerProps)) {
                     producerProps.forEach((k,v) -> sinkBuilder.setProperty(k,String.valueOf(v)));
                 }

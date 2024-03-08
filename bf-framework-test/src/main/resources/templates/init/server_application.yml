@@ -1,0 +1,10 @@
+spring:
+    application:
+        name: ${appName}
+    profiles:
+        active: local
+    config:
+        import:
+        [#noparse]- optional:classpath:${spring.application.name}-core.yml[/#noparse]
+        [#noparse]- optional:classpath:${spring.application.name}-core-${spring.profiles.active}.yml[/#noparse]
+        [#noparse]- classpath:${spring.application.name}.yml[/#noparse]
