@@ -65,8 +65,8 @@ public class CodeGenTool extends JavaGenerator {
         String groupId = corePackage.substring(0,corePackage.lastIndexOf("."));
         model.put("groupId",groupId);
         model.put("appName",appName);
-        String rootPackage = groupId.substring(0,groupId.lastIndexOf("."));
-        model.put("rootPackage",rootPackage);
+        String[] rootPackage = groupId.split("\\.");
+        model.put("rootPackage",rootPackage[0] + "." + rootPackage[1]);
         //root
         IOUtils.writeFile(freemarkerUtil.renderTemplate("init/root_pom.xml",model),basePath, "pom.xml");
         IOUtils.writeFile(freemarkerUtil.renderTemplate("init/.gitignore",model),basePath, ".gitignore");
@@ -275,7 +275,12 @@ public class CodeGenTool extends JavaGenerator {
             String includeTable = String.valueOf(configMap.get(YamlUtil.CODE_GEN_INCLUDE));
             String excludeTable = String.valueOf(configMap.get(YamlUtil.CODE_GEN_EXCLUDE));
             String schema = jdbcUrl.substring(jdbcUrl.lastIndexOf('/') + 1).split("\\?")[0];
-            ClassPathResource file = new ClassPathResource("jooq-314.xml");
+            ClassPathResource file = null;
+            if(SystemUtil.isJdk8()) {
+                file = new ClassPathResource("jooq-314.xml");
+            } else {
+                file = new ClassPathResource("jooq-default.xml");
+            }
 //        String fileStr = file.getContentAsString(StandardCharsets.UTF_8);
             String packageName = CFG.getPackageCore() + ".jooq.";
             Class<?> generateClass = JooqJavaGenerator.class;
