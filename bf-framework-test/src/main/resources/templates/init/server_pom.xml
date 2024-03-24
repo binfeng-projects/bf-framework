@@ -23,7 +23,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>3.2.0</version>
+                [#noparse]<version>${spring-boot.version}</version>[/#noparse]
                 <configuration>
                     <mainClass>${groupId}.AppMain</mainClass>
                 </configuration>

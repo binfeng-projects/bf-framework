@@ -13,7 +13,7 @@ import java.util.Set;
 
 /**
  * 校验工具类，支持，类，属性，属性值等各个维度校验
- * 所有继承{@link BaseDTO}且标注了JSR validation注解的的类自带校验基础的校验功能
+ * 所有继承BaseDTO且标注了JSR validation注解的的类自带校验基础的校验功能
  */
 public interface ValidUtil{
 //-----------------------------------this对象校验------------------------------------
@@ -251,7 +251,7 @@ public interface ValidUtil{
      * @param groups 校验组
      * @return String 如果是null，则表示校验通过，否则就是错误信息
      */
-    static String validO(Validator v,Object obj, Class<?>... groups) {
+    static String validO(Validator v, Object obj, Class<?>... groups) {
         if(CollectionUtils.hasEmpty(v,obj)){
             return EMPTY;
         }

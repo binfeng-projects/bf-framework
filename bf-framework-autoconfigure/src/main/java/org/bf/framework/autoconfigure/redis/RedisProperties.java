@@ -1,7 +1,5 @@
 package org.bf.framework.autoconfigure.redis;
 
-import lombok.Data;
-
 import java.time.Duration;
 import java.util.List;
 

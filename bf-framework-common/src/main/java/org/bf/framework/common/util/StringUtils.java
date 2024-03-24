@@ -1,14 +1,9 @@
 package org.bf.framework.common.util;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.text.StrPool;
-import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 
-import java.io.UnsupportedEncodingException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
 
 public class StringUtils {
     /**
@@ -57,7 +52,7 @@ public class StringUtils {
         return StrUtil.hasBlank(args);
     }
 
-    public static String join(CharSequence conjunction, Object... objs) {
+    public static String joins(CharSequence conjunction, Object... objs) {
         return StrUtil.join(conjunction, objs);
     }
 

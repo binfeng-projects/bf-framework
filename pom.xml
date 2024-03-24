@@ -15,16 +15,18 @@
     <properties>
         <!--自身模块 -->
         <revision>0.0.8-SNAPSHOT</revision>
+        <java.version>17</java.version>
+        <spring-boot.version>3.2.0</spring-boot.version>
+        <jar.tomcat-el>10.1.16</jar.tomcat-el>
+        <jar.hibernate-validator>8.0.1.Final</jar.hibernate-validator>
+        <jar.mybatis-spring>3.0.3</jar.mybatis-spring>
+        <!-- common和util工具类的依赖，通用依赖 -->
+        <!-- framework-test的依赖 -->
+        <jar.jooq>3.18.5</jar.jooq>
         <!-- 中间件boot的依赖 -->
         <spring.hadoop.version>0.0.8-SNAPSHOT</spring.hadoop.version>
         <hbase.version>2.5.6-hadoop3</hbase.version>
         <hive.version>3.1.3</hive.version>
-        <!-- common和util工具类的依赖，通用依赖 -->
-        <!-- framework-test的依赖 -->
-        <jar.jooq>3.18.5</jar.jooq>
-
-        <jar.tomcat-el>10.1.16</jar.tomcat-el>
-        <jar.hibernate-validator>8.0.1.Final</jar.hibernate-validator>
         <jar.slf4j>2.0.7</jar.slf4j>
         <jar.okhttp>4.12.0</jar.okhttp>
         <jar.okio>3.6.0</jar.okio>
@@ -33,18 +35,17 @@
         <jar.hutool>5.8.21</jar.hutool>
         <jar.xml>4.0.0</jar.xml>
         <jar.redisson>3.16.3</jar.redisson>
-        <jar.mybatis-spring>3.0.3</jar.mybatis-spring>
         <jar.mybatis>3.5.14</jar.mybatis>
         <!-- autoconfig的依赖 -->
         <jar.apollo>2.1.0</jar.apollo>
         <jar.xxl>2.4.0</jar.xxl>
         <dubbo.version>3.2.6</dubbo.version>
         <jar.protobuf>3.19.6</jar.protobuf>
-        <jar.arthas>3.6.7</jar.arthas>
         <jar.curator>5.5.0</jar.curator>
+        <jar.sentinel>1.8.7</jar.sentinel>
+        <jar.arthas>3.6.7</jar.arthas>
         <jar.skywalking>9.0.0</jar.skywalking>
         <jar.flink>1.19-SNAPSHOT</jar.flink>
-        <jar.sentinel>1.8.7</jar.sentinel>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -197,6 +198,14 @@
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-beans</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.hdrhistogram</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>joda-time</groupId>
+                        <artifactId>joda-time</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -230,13 +239,6 @@
                 <artifactId>protobuf-java</artifactId>
                 <version>${jar.protobuf}</version>
             </dependency>
-            <!--
-            <dependency>
-                <groupId>com.taobao.arthas</groupId>
-                <artifactId>arthas-spring-boot-starter</artifactId>
-                <version>${jar.arthas}</version>
-            </dependency>
-            -->
             <!-- framework-test的依赖 -->
             <dependency>
                 <groupId>org.jooq</groupId>
@@ -1409,11 +1411,6 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>com.thoughtworks.xstream</groupId>
-                <artifactId>xstream</artifactId>
-                <version>1.4.20</version>
-            </dependency>
-            <dependency>
                 <groupId>org.bf.framework</groupId>
                 <artifactId>bf-framework-starter-yarn</artifactId>
                 <version>${project.version}</version>
@@ -1480,6 +1477,11 @@
                         <artifactId>reactor-core</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.thoughtworks.xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>1.4.20</version>
             </dependency>
             <!-- sentinel -->
             <dependency>

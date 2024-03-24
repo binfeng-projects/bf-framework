@@ -9,6 +9,13 @@
     <packaging>pom</packaging>
     <artifactId>bf-framework-starters</artifactId>
     <modules>
+        <module>bf-framework-starter-skywalking</module>
+        <module>bf-framework-starter-hadoop</module>
+        <module>bf-framework-starter-hbase</module>
+        <module>bf-framework-starter-hive</module>
+        <module>bf-framework-starter-yarn</module>
+        <module>bf-framework-starter-flink</module>
+        <module>bf-framework-starter-batch</module>
         <module>bf-framework-starter-jdbc</module>
         <module>bf-framework-starter-jooq</module>
         <module>bf-framework-starter-mybatis</module>
@@ -17,18 +24,11 @@
         <module>bf-framework-starter-kafka</module>
         <module>bf-framework-starter-xxljob</module>
         <module>bf-framework-starter-zookeeper</module>
-        <module>bf-framework-starter-skywalking</module>
         <module>bf-framework-starter-actuator</module>
         <module>bf-framework-starter-dubbo</module>
         <module>bf-framework-starter-storage</module>
         <module>bf-framework-starter-vms</module>
         <module>bf-framework-starter-elasticsearch</module>
-        <module>bf-framework-starter-hadoop</module>
-        <module>bf-framework-starter-hbase</module>
-        <module>bf-framework-starter-hive</module>
-        <module>bf-framework-starter-yarn</module>
-        <module>bf-framework-starter-flink</module>
-        <module>bf-framework-starter-batch</module>
         <module>bf-framework-starter-apollo</module>
         <module>bf-framework-starter-sentinel</module>
     </modules>

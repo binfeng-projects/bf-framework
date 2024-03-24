@@ -2,7 +2,7 @@ package org.bf.framework.boot.support.storage;
 
 import cn.hutool.crypto.digest.MD5;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.bf.framework.common.util.StringUtils;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

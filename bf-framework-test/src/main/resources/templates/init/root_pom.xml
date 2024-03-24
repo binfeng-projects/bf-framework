@@ -17,6 +17,8 @@
         <revision>1.0.0-SNAPSHOT</revision>
         <!-- 测试和util -->
         <bf-framework.version>0.0.8-SNAPSHOT</bf-framework.version>
+        <java.version>17</java.version>
+        <spring-boot.version>3.2.0</spring-boot.version>
         <!-- 中间件集成 -->
         <middleware-integration.version>1.0.0-SNAPSHOT</middleware-integration.version>
     </properties>

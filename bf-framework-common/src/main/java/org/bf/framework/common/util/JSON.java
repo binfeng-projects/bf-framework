@@ -1,14 +1,13 @@
 package org.bf.framework.common.util;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.CharsetUtil;
 import com.google.gson.*;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
+
 import jakarta.xml.bind.Marshaller;
 import jakarta.xml.bind.Unmarshaller;
-
 import jakarta.xml.bind.JAXBContext;
 import java.io.Reader;
 import java.io.StringReader;
