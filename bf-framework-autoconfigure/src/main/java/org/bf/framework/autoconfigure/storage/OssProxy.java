@@ -7,10 +7,10 @@ import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectResult;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.bf.framework.boot.support.storage.StorageProperties;
 import org.bf.framework.boot.support.storage.StorageProxy;
 import org.bf.framework.common.util.IOUtils;
+import org.bf.framework.common.util.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

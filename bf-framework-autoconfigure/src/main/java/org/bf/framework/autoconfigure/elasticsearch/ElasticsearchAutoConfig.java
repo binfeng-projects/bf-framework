@@ -9,9 +9,6 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.Credentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
-import org.apache.http.impl.nio.reactor.IOReactorConfig;
-import org.apache.http.nio.conn.ssl.SSLIOSessionStrategy;
 import org.bf.framework.boot.annotation.auto.EnableConfig;
 import org.bf.framework.boot.annotation.auto.EnableConfigHandler;
 import org.bf.framework.boot.support.Middleware;
@@ -28,24 +25,21 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.domain.EntityScanner;
 import org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchProperties;
 import org.springframework.boot.context.properties.PropertyMapper;
-import org.springframework.boot.ssl.SslBundle;
-import org.springframework.boot.ssl.SslOptions;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.convert.ElasticsearchCustomConversions;
 import org.springframework.data.elasticsearch.core.convert.MappingElasticsearchConverter;
 import org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.bf.framework.boot.constant.MiddlewareConst.*;
+import static org.bf.framework.boot.constant.MiddlewareConst.PREFIX_ELASTICSEARCH;
 
 @AutoConfiguration
 @ConditionalOnClass({RestClientBuilder.class,ElasticsearchTemplate.class})
@@ -92,18 +86,17 @@ public class ElasticsearchAutoConfig implements EnableConfigHandler<Elasticsearc
         return result;
     }
     private RestClient createRestClient(ElasticsearchProperties cfg) {
-        RestClientBuilder builder = RestClient.builder(cfg.getUris().stream().map(ElasticsearchAutoConfig::createNode).toList()
-                .stream()
-                .map((node) -> new HttpHost(node.getHost(), node.getPort(), node.getScheme()))
-                .toArray(HttpHost[]::new));
+        HttpHost[] hosts = (HttpHost[])cfg.getUris().stream().map(ElasticsearchAutoConfig::createHttpHost).toArray((x$0) -> {
+            return new HttpHost[x$0];
+        });
+        RestClientBuilder builder = RestClient.builder(hosts);
         PropertyMapper map = PropertyMapper.get();
         builder.setHttpClientConfigCallback((httpClientBuilder) -> {
             httpClientBuilder.setDefaultCredentialsProvider(new CredentialsProvider(cfg));
-            map.from(cfg::isSocketKeepAlive)
-                    .to((keepAlive) -> httpClientBuilder
-                            .setDefaultIOReactorConfig(IOReactorConfig.custom().setSoKeepAlive(keepAlive).build()));
-
-            configureSsl(httpClientBuilder,getBundle(cfg.getRestclient().getSsl().getBundle()));
+//            map.from(cfg::isSocketKeepAlive)
+//                    .to((keepAlive) -> httpClientBuilder
+//                            .setDefaultIOReactorConfig(IOReactorConfig.custom().setSoKeepAlive(keepAlive).build()));
+//
             return httpClientBuilder;
         });
         builder.setRequestConfigCallback((requestConfigBuilder) -> {
@@ -121,29 +114,79 @@ public class ElasticsearchAutoConfig implements EnableConfigHandler<Elasticsearc
         if (StringUtils.isNotBlank(pathPrefix)) {
             builder.setPathPrefix(pathPrefix);
         }
-//        SnifferBuilder builder = Sniffer.builder(client);
-//        PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
-//        Duration interval = cfg.getRestclient().getSniffer().getInterval();
-//        map.from(interval).asInt(Duration::toMillis).to(builder::setSniffIntervalMillis);
-//        Duration delayAfterFailure = cfg.getRestclient().getSniffer().getDelayAfterFailure();
-//        map.from(delayAfterFailure).asInt(Duration::toMillis).to(builder::setSniffAfterFailureDelayMillis);
         return builder.build();
     }
+    public static HttpHost createHttpHost(String uri) {
+        try {
+            return createHttpHost(URI.create(uri));
+        } catch (IllegalArgumentException var3) {
+            return HttpHost.create(uri);
+        }
+    }
+    public static HttpHost createHttpHost(URI uri) {
+        if (!org.springframework.util.StringUtils.hasLength(uri.getUserInfo())) {
+            return HttpHost.create(uri.toString());
+        } else {
+            try {
+                return HttpHost.create((new URI(uri.getScheme(), (String)null, uri.getHost(), uri.getPort(), uri.getPath(), uri.getQuery(), uri.getFragment())).toString());
+            } catch (URISyntaxException var3) {
+                throw new IllegalStateException(var3);
+            }
+        }
+    }
+//    private RestClient createRestClient(ElasticsearchProperties cfg) {
+//        RestClientBuilder builder = RestClient.builder(cfg.getUris().stream().map(ElasticsearchAutoConfig::createNode).toList()
+//                .stream()
+//                .map((node) -> new HttpHost(node.getHost(), node.getPort(), node.getScheme()))
+//                .toArray(HttpHost[]::new));
+//        PropertyMapper map = PropertyMapper.get();
+//        builder.setHttpClientConfigCallback((httpClientBuilder) -> {
+//            httpClientBuilder.setDefaultCredentialsProvider(new CredentialsProvider(cfg));
+//            map.from(cfg::isSocketKeepAlive)
+//                    .to((keepAlive) -> httpClientBuilder
+//                            .setDefaultIOReactorConfig(IOReactorConfig.custom().setSoKeepAlive(keepAlive).build()));
+//
+//            configureSsl(httpClientBuilder,getBundle(cfg.getRestclient().getSsl().getBundle()));
+//            return httpClientBuilder;
+//        });
+//        builder.setRequestConfigCallback((requestConfigBuilder) -> {
+//            map.from(cfg::getConnectionTimeout)
+//                    .whenNonNull()
+//                    .asInt(Duration::toMillis)
+//                    .to(requestConfigBuilder::setConnectTimeout);
+//            map.from(cfg::getSocketTimeout)
+//                    .whenNonNull()
+//                    .asInt(Duration::toMillis)
+//                    .to(requestConfigBuilder::setSocketTimeout);
+//            return requestConfigBuilder;
+//        });
+//        String pathPrefix = cfg.getPathPrefix();
+//        if (StringUtils.isNotBlank(pathPrefix)) {
+//            builder.setPathPrefix(pathPrefix);
+//        }
+////        SnifferBuilder builder = Sniffer.builder(client);
+////        PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
+////        Duration interval = cfg.getRestclient().getSniffer().getInterval();
+////        map.from(interval).asInt(Duration::toMillis).to(builder::setSniffIntervalMillis);
+////        Duration delayAfterFailure = cfg.getRestclient().getSniffer().getDelayAfterFailure();
+////        map.from(delayAfterFailure).asInt(Duration::toMillis).to(builder::setSniffAfterFailureDelayMillis);
+//        return builder.build();
+//    }
     private static URI createNode(String uri) {
         if (!(uri.startsWith("http://") || uri.startsWith("https://"))) {
             uri = "http://" + uri;
         }
         return URI.create(uri);
     }
-    private static void configureSsl(HttpAsyncClientBuilder httpClientBuilder, SslBundle sslBundle) {
-        if(sslBundle == null) {
-            return;
-        }
-        SSLContext sslcontext = sslBundle.createSslContext();
-        SslOptions sslOptions = sslBundle.getOptions();
-        httpClientBuilder.setSSLStrategy(new SSLIOSessionStrategy(sslcontext, sslOptions.getEnabledProtocols(),
-                sslOptions.getCiphers(), (HostnameVerifier) null));
-    }
+//    private static void configureSsl(HttpAsyncClientBuilder httpClientBuilder, SslBundle sslBundle) {
+//        if(sslBundle == null) {
+//            return;
+//        }
+//        SSLContext sslcontext = sslBundle.createSslContext();
+//        SslOptions sslOptions = sslBundle.getOptions();
+//        httpClientBuilder.setSSLStrategy(new SSLIOSessionStrategy(sslcontext, sslOptions.getEnabledProtocols(),
+//                sslOptions.getCiphers(), (HostnameVerifier) null));
+//    }
     private static class CredentialsProvider extends BasicCredentialsProvider {
 
         CredentialsProvider(ElasticsearchProperties cfg) {

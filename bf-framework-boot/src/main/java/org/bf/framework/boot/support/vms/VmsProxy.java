@@ -1,8 +1,8 @@
 package org.bf.framework.boot.support.vms;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.bf.framework.common.util.CollectionUtils;
+import org.bf.framework.common.util.StringUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -56,7 +56,7 @@ public abstract class VmsProxy {
             }
         }
         if (CollectionUtils.isNotEmpty(errors)) {
-            return StringUtils.join(errors, "\r\n");
+            return StringUtils.join("\r\n",errors);
         }
         return null;
     }

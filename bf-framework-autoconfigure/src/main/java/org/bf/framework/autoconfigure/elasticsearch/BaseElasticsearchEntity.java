@@ -1,6 +1,5 @@
 package org.bf.framework.autoconfigure.elasticsearch;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.experimental.FieldNameConstants;
 import org.bf.framework.common.base.PkAble;
 import org.bf.framework.common.util.valid.Edit;
@@ -12,6 +11,7 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

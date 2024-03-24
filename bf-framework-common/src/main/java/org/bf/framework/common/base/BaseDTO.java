@@ -2,10 +2,10 @@ package org.bf.framework.common.base;
 
 
 import lombok.experimental.FieldNameConstants;
-
-import jakarta.validation.constraints.Size;
 import org.bf.framework.common.util.valid.Normal;
 import org.bf.framework.common.util.valid.ValidUtil;
+
+import javax.validation.constraints.Size;
 
 @FieldNameConstants
 public abstract class BaseDTO<PK extends Number> extends BaseField<PK> implements ValidUtil{

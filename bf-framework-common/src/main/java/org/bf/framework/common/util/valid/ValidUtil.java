@@ -1,11 +1,12 @@
 package org.bf.framework.common.util.valid;
 
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
+import org.bf.framework.common.base.BaseDTO;
 import org.bf.framework.common.util.CollectionUtils;
 import org.bf.framework.common.util.StringUtils;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -251,7 +252,7 @@ public interface ValidUtil{
      * @param groups 校验组
      * @return String 如果是null，则表示校验通过，否则就是错误信息
      */
-    static String validO(Validator v,Object obj, Class<?>... groups) {
+    static String validO(Validator v, Object obj, Class<?>... groups) {
         if(CollectionUtils.hasEmpty(v,obj)){
             return EMPTY;
         }

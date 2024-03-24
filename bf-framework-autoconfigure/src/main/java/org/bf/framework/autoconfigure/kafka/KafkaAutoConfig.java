@@ -6,7 +6,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.bf.framework.boot.annotation.auto.EnableConfig;
 import org.bf.framework.boot.annotation.auto.EnableConfigHandler;
 import org.bf.framework.boot.support.Middleware;
-import org.bf.framework.boot.util.SpringUtil;
 import org.bf.framework.boot.util.YamlUtil;
 import org.bf.framework.common.util.CollectionUtils;
 import org.bf.framework.common.util.StringUtils;
@@ -16,7 +15,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.PropertyMapper;
-import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -54,7 +52,8 @@ public class KafkaAutoConfig implements EnableConfigHandler<KafkaProperties> {
         try {
             KafkaProperties cfg = (KafkaProperties)YamlUtil.getConfigBind(map);
             //---------------------------producer & template --------------------------
-            Map<String, Object> producerProperties = cfg.buildProducerProperties(SpringUtil.getBean(SslBundles.class));
+//            Map<String, Object> producerProperties = cfg.buildProducerProperties(SpringUtil.getBean(SslBundles.class));
+            Map<String, Object> producerProperties = cfg.buildProducerProperties();
             producerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, cfg.getBootstrapServers());
 //            producerProperties.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "PLAINTEXT");
             DefaultKafkaProducerFactory<Object, Object> kafkaProducerFactory = new DefaultKafkaProducerFactory<>(producerProperties);
@@ -70,7 +69,8 @@ public class KafkaAutoConfig implements EnableConfigHandler<KafkaProperties> {
             result.add(new Middleware().setPrefix(PREFIX).setSchemaName(schema).setType(KafkaTemplate.class).setBean(kafkaTemplate));
 
             //--------------------------- Consumer--------------------------
-            Map<String, Object> consumerProperties = cfg.buildConsumerProperties(SpringUtil.getBean(SslBundles.class));
+//            Map<String, Object> consumerProperties = cfg.buildConsumerProperties(SpringUtil.getBean(SslBundles.class));
+            Map<String, Object> consumerProperties = cfg.buildConsumerProperties();
             consumerProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, cfg.getBootstrapServers());
             DefaultKafkaConsumerFactory<Object, Object> consumerFactory = new DefaultKafkaConsumerFactory<>(consumerProperties);
             ConcurrentKafkaListenerContainerFactory<Object, Object> listenerFactory = new ConcurrentKafkaListenerContainerFactory<>();
@@ -91,8 +91,8 @@ public class KafkaAutoConfig implements EnableConfigHandler<KafkaProperties> {
             factory.setBatchListener(true);
         }
         map.from(properties::getConcurrency).to(factory::setConcurrency);
-        map.from(properties::isAutoStartup).to(factory::setAutoStartup);
-        map.from(properties::getChangeConsumerThreadName).to(factory::setChangeConsumerThreadName);
+//        map.from(properties::isAutoStartup).to(factory::setAutoStartup);
+//        map.from(properties::getChangeConsumerThreadName).to(factory::setChangeConsumerThreadName);
 //        map.from(this.batchMessageConverter).to(factory::setBatchMessageConverter);
 //        map.from(this.recordMessageConverter).to(factory::setRecordMessageConverter);
 //        map.from(this.recordFilterStrategy).to(factory::setRecordFilterStrategy);
@@ -108,7 +108,7 @@ public class KafkaAutoConfig implements EnableConfigHandler<KafkaProperties> {
         PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
         KafkaProperties.Listener properties = cfg.getListener();
         map.from(properties::getAckMode).to(container::setAckMode);
-        map.from(properties::getAsyncAcks).to(container::setAsyncAcks);
+//        map.from(properties::getAsyncAcks).to(container::setAsyncAcks);
         map.from(properties::getClientId).to(container::setClientId);
         map.from(properties::getAckCount).to(container::setAckCount);
         map.from(properties::getAckTime).as(Duration::toMillis).to(container::setAckTime);

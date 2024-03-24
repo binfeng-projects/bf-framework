@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.common.util.CollectionUtils;
 import org.hibernate.validator.HibernateValidator;
 
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.util.Set;
 
 /**

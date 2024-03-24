@@ -1,12 +1,8 @@
 package org.bf.framework.boot.annotation.auto;
 
 import org.bf.framework.boot.support.Middleware;
-import org.bf.framework.boot.util.SpringUtil;
 import org.bf.framework.boot.util.YamlUtil;
-import org.bf.framework.common.util.StringUtils;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.boot.ssl.SslBundle;
-import org.springframework.boot.ssl.SslBundles;
 
 import java.util.List;
 import java.util.Map;
@@ -45,15 +41,15 @@ public interface EnableConfigHandler<T> {
 
     T bindInstance(Map<String,Object> properties);
 
-    default SslBundle getBundle(String bundleName){
-        if (StringUtils.isBlank(bundleName)) {
-            return null;
-        }
-        SslBundles bundles = SpringUtil.getBean(SslBundles.class);
-        if (bundles == null) {
-            return null;
-        }
-        return bundles.getBundle(bundleName);
-    }
+//    default SslBundle getBundle(String bundleName){
+//        if (StringUtils.isBlank(bundleName)) {
+//            return null;
+//        }
+//        SslBundles bundles = SpringUtil.getBean(SslBundles.class);
+//        if (bundles == null) {
+//            return null;
+//        }
+//        return bundles.getBundle(bundleName);
+//    }
 
 }

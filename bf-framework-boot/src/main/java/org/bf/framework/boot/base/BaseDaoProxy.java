@@ -1,13 +1,12 @@
 package org.bf.framework.boot.base;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.boot.support.mq.MqProducer;
 import org.bf.framework.boot.util.SpringUtil;
-import org.bf.framework.common.base.*;
+import org.bf.framework.common.base.BaseDTO;
+import org.bf.framework.common.base.BaseDao;
+import org.bf.framework.common.base.BaseEntity;
+import org.bf.framework.common.base.StartEndSelect;
 import org.bf.framework.common.constant.Const;
 import org.bf.framework.common.result.PageResult;
 import org.bf.framework.common.util.JSON;
@@ -18,6 +17,10 @@ import org.bf.framework.common.util.valid.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -108,7 +111,7 @@ public class BaseDaoProxy<PK extends Number,DTO extends BaseDTO<PK>,Entity exten
     /**
      * 内部使用，强制分页，  没有校验任何字段，查询允许null
      */
-    public PageResult<Entity> listEntity(Entity e,@Positive Long page,@Positive Long size) {
+    public PageResult<Entity> listEntity(Entity e, @Positive Long page, @Positive Long size) {
         PageResult<Entity> pager = new PageResult<Entity>();
         pager.setPage(page);
         pager.setSize(size);

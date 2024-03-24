@@ -8,9 +8,9 @@ import com.amazonaws.services.s3.model.PutObjectResult;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.util.EC2MetadataUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.bf.framework.boot.support.storage.StorageProperties;
 import org.bf.framework.boot.support.storage.StorageProxy;
+import org.bf.framework.common.util.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

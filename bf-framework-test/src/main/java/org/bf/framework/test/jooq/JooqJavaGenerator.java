@@ -17,6 +17,7 @@ import org.bf.framework.common.result.PageResult;
 import org.bf.framework.common.result.Result;
 import org.bf.framework.common.util.CollectionUtils;
 import org.bf.framework.common.util.MapUtils;
+import org.bf.framework.common.util.SystemUtil;
 import org.bf.framework.test.base.BaseProxyTest;
 import org.bf.framework.test.codegen.CodeGenTool;
 import org.bf.framework.test.pojo.TemplateColumn;
@@ -44,6 +45,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.bf.framework.boot.constant.FrameworkConst.BF;
 import static org.bf.framework.boot.constant.FrameworkConst.DOT;
@@ -60,12 +62,29 @@ public class JooqJavaGenerator extends JavaGenerator {
     protected static Map<String, TemplateSchema> schemaModelMap = MapUtils.newConcurrentHashMap();
     protected static Map<String, Map<String, Object>> tableModelMap = MapUtils.newConcurrentHashMap();
 
+//    /**
+//     * 控制整个流程
+//     */
+//    @Override
+//    public void generate(Database db) {
+//        super.generate(db); //先走完原有流程
+//        //走扩展逻辑
+//        if ("elasticsearch".equals(currentMiddlewareType)) {
+//            genElasticsearchConfig();
+//        }
+//        else if ("datasource".equals(currentMiddlewareType)) {
+//            if (SpringUtil.getBean(MybatisAutoConfig.class) != null) {
+//                genMybatisConfig();
+//            }
+//        }
+//    }
+
     /**
      * 控制整个流程
      */
     @Override
-    public void generate(Database db) {
-        super.generate(db); //先走完原有流程
+    protected void empty(File file, String suffix, Set<File> keep, Set<File> ignore) {
+        super.empty(file,suffix,keep,ignore);//先走完原有流程
         //走扩展逻辑
         if ("elasticsearch".equals(currentMiddlewareType)) {
             genElasticsearchConfig();
@@ -76,7 +95,6 @@ public class JooqJavaGenerator extends JavaGenerator {
             }
         }
     }
-
     @Override
     protected void generateTable(SchemaDefinition schema, TableDefinition table) {
         if ("elasticsearch".equals(currentMiddlewareType)) {
@@ -205,7 +223,7 @@ public class JooqJavaGenerator extends JavaGenerator {
     public static List<ColumnDefinition> filterTypedElements(TableDefinition definition, boolean filter) {
         List<ColumnDefinition> colDefins = definition.getColumns();
         if (filter) {
-            return colDefins.stream().filter(def -> !ignoreFileds.contains(def.getName())).toList();
+            return colDefins.stream().filter(def -> !ignoreFileds.contains(def.getName())).collect(Collectors.toList());
         }
         return colDefins;
     }
@@ -346,7 +364,11 @@ public class JooqJavaGenerator extends JavaGenerator {
         out.println("}");
         //PostConstruct
         out.ref(CodeGenTool.CFG.getPackageCore() + "." + MIDDLEWARE_DIR + "." + CodeGenTool.MIDDLEWARE_HOLDER);
-        out.println("@%s", out.ref("jakarta.annotation.PostConstruct"));
+        if(SystemUtil.isJdk8()) {
+            out.println("@%s", out.ref("javax.annotation.PostConstruct"));
+        } else {
+            out.println("@%s", out.ref("jakarta.annotation.PostConstruct"));
+        }
         out.println("public void init() {");
         // MiddlewareHolder
         out.println("setConfiguration(%s.getDSLContext(%s.DATASOURCE_%s).configuration());", CodeGenTool.MIDDLEWARE_HOLDER,CodeGenTool.MIDDLEWARE_HOLDER,schema.getName().toUpperCase());

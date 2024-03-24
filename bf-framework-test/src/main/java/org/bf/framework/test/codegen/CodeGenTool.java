@@ -1,15 +1,11 @@
 package org.bf.framework.test.codegen;
 
-import jakarta.xml.bind.JAXB;
 import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.boot.support.Middleware;
 import org.bf.framework.boot.util.FreemarkerUtil;
 import org.bf.framework.boot.util.SpringUtil;
 import org.bf.framework.boot.util.YamlUtil;
-import org.bf.framework.common.util.CollectionUtils;
-import org.bf.framework.common.util.IOUtils;
-import org.bf.framework.common.util.MapUtils;
-import org.bf.framework.common.util.StringUtils;
+import org.bf.framework.common.util.*;
 import org.bf.framework.test.jooq.JooqJavaGenerator;
 import org.bf.framework.test.jooq.JooqJavaStrategy;
 import org.jooq.codegen.GenerationTool;
@@ -21,6 +17,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.InputStreamReader;
 import java.util.*;
 
 import static org.bf.framework.boot.constant.FrameworkConst.BF;
@@ -71,8 +68,8 @@ public class CodeGenTool extends JavaGenerator {
         String rootPackage = groupId.substring(0,groupId.lastIndexOf("."));
         model.put("rootPackage",rootPackage);
         //root
-        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/root_pom.xml",model),new File(basePath, "pom.xml"));
-        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/.gitignore",model),new File(basePath, ".gitignore"));
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/root_pom.xml",model),basePath, "pom.xml");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/.gitignore",model),basePath, ".gitignore");
         //client
         String clientPath = basePath + "/" + appName + "-client";
         IOUtils.writeFile(freemarkerUtil.renderTemplate("init/client_pom.xml",model),clientPath, "pom.xml");
@@ -278,7 +275,7 @@ public class CodeGenTool extends JavaGenerator {
             String includeTable = String.valueOf(configMap.get(YamlUtil.CODE_GEN_INCLUDE));
             String excludeTable = String.valueOf(configMap.get(YamlUtil.CODE_GEN_EXCLUDE));
             String schema = jdbcUrl.substring(jdbcUrl.lastIndexOf('/') + 1).split("\\?")[0];
-            ClassPathResource file = new ClassPathResource("jooq-default.xml");
+            ClassPathResource file = new ClassPathResource("jooq-314.xml");
 //        String fileStr = file.getContentAsString(StandardCharsets.UTF_8);
             String packageName = CFG.getPackageCore() + ".jooq.";
             Class<?> generateClass = JooqJavaGenerator.class;
@@ -288,7 +285,8 @@ public class CodeGenTool extends JavaGenerator {
 //                防止冲突，覆盖已经生成的代码
                 packageName = packageName + "not_exists";
             }
-            Configuration cfg = JAXB.unmarshal(file.getInputStream(), Configuration.class);
+//            Configuration cfg = JAXB.unmarshal(file.getInputStream(), Configuration.class);
+            Configuration cfg = JSON.xmlToBean(new InputStreamReader(file.getInputStream()),Configuration.class);
             cfg.getGenerator().withName(generateClass.getName()).getStrategy().withName(STRATEGY_NAME);
             cfg.getJdbc().withDriver(MYSQL_DRIVER).withUrl(jdbcUrl)
                     .withUser(userName).withPassword(password);

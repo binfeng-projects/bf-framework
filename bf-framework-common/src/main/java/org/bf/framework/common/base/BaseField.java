@@ -1,13 +1,13 @@
 package org.bf.framework.common.base;
 
-import java.io.Serializable;
-import java.util.Collection;
-
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.experimental.FieldNameConstants;
 import org.bf.framework.common.util.valid.Edit;
 import org.bf.framework.common.util.valid.EditPart;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Collection;
 
 @FieldNameConstants
 public abstract class BaseField<PK extends Number> implements PkAble<PK> {

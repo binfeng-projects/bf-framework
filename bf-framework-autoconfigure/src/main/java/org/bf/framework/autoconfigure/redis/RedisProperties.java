@@ -1,7 +1,5 @@
 package org.bf.framework.autoconfigure.redis;
 
-import lombok.Data;
-
 import java.time.Duration;
 import java.util.List;
 
@@ -27,7 +25,7 @@ public class RedisProperties {
 	private org.springframework.boot.autoconfigure.data.redis.RedisProperties.Pool pool;
 	private org.springframework.boot.autoconfigure.data.redis.RedisProperties.Sentinel sentinel;
 	private org.springframework.boot.autoconfigure.data.redis.RedisProperties.Cluster cluster;
-	private final org.springframework.boot.autoconfigure.data.redis.RedisProperties.Ssl ssl = new org.springframework.boot.autoconfigure.data.redis.RedisProperties.Ssl();
+//	private final org.springframework.boot.autoconfigure.data.redis.RedisProperties.Ssl ssl = new org.springframework.boot.autoconfigure.data.redis.RedisProperties.Ssl();
 	private final Lettuce lettuce = new Lettuce();
 	public static class Lettuce {
 		private Duration shutdownTimeout = Duration.ofMillis(100);
@@ -208,9 +206,9 @@ public class RedisProperties {
 		this.cluster = cluster;
 	}
 
-	public org.springframework.boot.autoconfigure.data.redis.RedisProperties.Ssl getSsl() {
-		return ssl;
-	}
+//	public org.springframework.boot.autoconfigure.data.redis.RedisProperties.Ssl getSsl() {
+//		return ssl;
+//	}
 
 	public Lettuce getLettuce() {
 		return lettuce;

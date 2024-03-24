@@ -1,516 +1,118 @@
-/*
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *  https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * Other licenses:
- * -----------------------------------------------------------------------------
- * Commercial licenses for this work are available. These replace the above
- * ASL 2.0 and offer limited warranties, support, maintenance, and commercial
- * database integrations.
- *
- * For more information, please visit: https://www.jooq.org/legal/licensing
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- */
 package org.jooq.codegen;
+
+import org.jooq.meta.*;
 
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import org.jooq.meta.AttributeDefinition;
-import org.jooq.meta.ColumnDefinition;
-import org.jooq.meta.Definition;
-import org.jooq.meta.DomainDefinition;
-import org.jooq.meta.EnumDefinition;
-import org.jooq.meta.ForeignKeyDefinition;
-import org.jooq.meta.ParameterDefinition;
-import org.jooq.meta.RoutineDefinition;
-import org.jooq.meta.SyntheticDaoDefinition;
-import org.jooq.meta.TableDefinition;
-import org.jooq.meta.UDTDefinition;
-
-/**
- * A strategy for naming various artefacts generated from {@link Definition}'s
- *
- * @author Lukas Eder
- */
 public interface GeneratorStrategy {
-
-    // -------------------------------------------------------------------------
-    // XXX: Configuration of the strategy
-    // -------------------------------------------------------------------------
-
-    /**
-     * The target directory
-     */
     String getTargetDirectory();
 
-    /**
-     * Initialise the target directory
-     */
-    void setTargetDirectory(String directory);
+    void setTargetDirectory(String var1);
 
-    /**
-     * @return Get the target package for the current configuration
-     */
     String getTargetPackage();
 
-    /**
-     * Initialise the target package name
-     */
-    void setTargetPackage(String packageName);
+    void setTargetPackage(String var1);
 
-    /**
-     * @return Get the target locale for the current configuration
-     */
     Locale getTargetLocale();
 
-    /**
-     * Initialise the target locale
-     */
-    void setTargetLocale(Locale targetLocale);
+    void setTargetLocale(Locale var1);
 
-    /**
-     * @return Get the target language for the current configuration
-     */
-    Language getTargetLanguage();
+    AbstractGenerator.Language getTargetLanguage();
 
-    /**
-     * Initialise the target language
-     */
-    void setTargetLanguage(Language targetLanguage);
+    void setTargetLanguage(AbstractGenerator.Language var1);
 
-    /**
-     * Whether fields are instance fields (as opposed to static fields)
-     */
-    void setInstanceFields(boolean instanceFields);
+    void setInstanceFields(boolean var1);
 
-    /**
-     * Whether fields are instance fields (as opposed to static fields)
-     */
     boolean getInstanceFields();
 
-    /**
-     * Whether getters and setters should be generated JavaBeans style (or jOOQ
-     * style).
-     */
-    void setJavaBeansGettersAndSetters(boolean javaBeansGettersAndSetters);
+    void setJavaBeansGettersAndSetters(boolean var1);
 
-    /**
-     * Whether getters and setters should be generated JavaBeans style (or jOOQ
-     * style).
-     */
     boolean getJavaBeansGettersAndSetters();
 
-    /**
-     * Whether names of unambiguous {@link ForeignKeyDefinition} should be based
-     * on the referenced {@link TableDefinition}.
-     * <p>
-     * When a child table has only one {@link ForeignKeyDefinition} towards a
-     * parent table, then that path is "unambiguous." In that case, some
-     * {@link GeneratorStrategy} implementations may choose to use the parent
-     * table's {@link TableDefinition} for implementations of
-     * {@link #getJavaMethodName(Definition)}, instead of the
-     * {@link ForeignKeyDefinition}, e.g. for implicit join paths.
-     * <p>
-     * This flag allows for turning off this default behaviour.
-     */
-    void setUseTableNameForUnambiguousFKs(boolean useTableNameForUnambiguousFKs);
+    String getJavaIdentifier(Definition var1);
 
-    /**
-     * Whether names of unambiguous {@link ForeignKeyDefinition} should be based
-     * on the referenced {@link TableDefinition}.
-     * <p>
-     * When a child table has only one {@link ForeignKeyDefinition} towards a
-     * parent table, then that path is "unambiguous." In that case, some
-     * {@link GeneratorStrategy} implementations may choose to use the parent
-     * table's {@link TableDefinition} for implementations of
-     * {@link #getJavaMethodName(Definition)}, instead of the
-     * {@link ForeignKeyDefinition}, e.g. for implicit join paths.
-     * <p>
-     * This flag allows for turning off this default behaviour.
-     */
-    boolean getUseTableNameForUnambiguousFKs();
+    List<String> getJavaIdentifiers(Collection<? extends Definition> var1);
 
-    // -------------------------------------------------------------------------
-    // XXX: The SPI
-    // -------------------------------------------------------------------------
+    List<String> getJavaIdentifiers(Definition... var1);
 
-    /**
-     * This is applied to enum literals of a given {@link EnumDefinition}.
-     *
-     * @return The Java identifier representing this enum literal, e.g. [OK]
-     */
-    String getJavaEnumLiteral(EnumDefinition definition, String literal);
+    String getFullJavaIdentifier(Definition var1);
 
-    /**
-     * @see #getJavaEnumLiteral(EnumDefinition, String)
-     */
-    List<String> getJavaEnumLiterals(EnumDefinition definition, Collection<? extends String> literals);
+    List<String> getFullJavaIdentifiers(Collection<? extends Definition> var1);
 
-    /**
-     * @see #getJavaEnumLiteral(EnumDefinition, String)
-     */
-    List<String> getJavaEnumLiterals(EnumDefinition definition, String... literals);
+    List<String> getFullJavaIdentifiers(Definition... var1);
 
-    /**
-     * This is applied to definitions that can result in reference static and
-     * instance members. For instance, the reference instance of a
-     * {@link TableDefinition} is a java identifier
-     *
-     * @return The Java identifier representing this object, e.g. [my_table]
-     */
-    String getJavaIdentifier(Definition definition);
+    String getJavaSetterName(Definition var1);
 
-    /**
-     * @see #getJavaIdentifier(Definition)
-     */
-    List<String> getJavaIdentifiers(Collection<? extends Definition> definitions);
+    String getJavaSetterName(Definition var1, Mode var2);
 
-    /**
-     * @see #getJavaIdentifier(Definition)
-     */
-    List<String> getJavaIdentifiers(Definition... definitions);
+    String getJavaGetterName(Definition var1);
 
-    /**
-     * This is applied to definitions that can result in reference static and
-     * instance members. For instance, the reference instance of a
-     * {@link TableDefinition} is a java identifier
-     *
-     * @return The Java identifier representing this object, e.g. [my_table]
-     */
-    String getFullJavaIdentifier(Definition definition);
+    String getJavaGetterName(Definition var1, Mode var2);
 
-    /**
-     * @see #getFullJavaIdentifier(Definition)
-     */
-    List<String> getFullJavaIdentifiers(Collection<? extends Definition> definitions);
+    String getJavaMethodName(Definition var1);
 
-    /**
-     * @see #getFullJavaIdentifier(Definition)
-     */
-    List<String> getFullJavaIdentifiers(Definition... definitions);
+    String getJavaMethodName(Definition var1, Mode var2);
 
-    /**
-     * This is applied to definitions that can result in setters of a container.
-     * For example, the definition could be a {@link ColumnDefinition}, the
-     * container a {@link TableDefinition}. Then this would apply to records and
-     * POJOs. Also, the definition could be an {@link AttributeDefinition} and
-     * the container a {@link UDTDefinition}
-     * <p>
-     * This is the same as calling
-     * <code>getJavaSetterName(definition, Mode.DEFAULT)</code>
-     *
-     * @return The Java setter method name representing this object, e.g.
-     *         [setMyTable]
-     */
-    String getJavaSetterName(Definition definition);
+    String getGlobalReferencesJavaClassExtends(Definition var1, Class<? extends Definition> var2);
 
-    /**
-     * This is applied to definitions that can result in setters of a container.
-     * For example, the definition could be a {@link ColumnDefinition}, the
-     * container a {@link TableDefinition}. Then this would apply to records and
-     * POJOs. Also, the definition could be an {@link AttributeDefinition} and
-     * the container a {@link UDTDefinition}
-     *
-     * @return The Java setter method name representing this object, e.g.
-     *         [setMyTable]
-     */
-    String getJavaSetterName(Definition definition, Mode mode);
+    String getJavaClassExtends(Definition var1);
 
-    /**
-     * This is applied to definitions that can result in getters of a container.
-     * For example, the definition could be a {@link ColumnDefinition}, the
-     * container a {@link TableDefinition}. Then this would apply to records and
-     * POJOs. Also, the definition could be an {@link AttributeDefinition} and
-     * the container a {@link UDTDefinition}
-     * <p>
-     * This is the same as calling
-     * <code>getJavaGetterName(definition, Mode.DEFAULT)</code>
-     *
-     * @return The Java getter method name representing this object, e.g.
-     *         [getMyTable]
-     */
-    String getJavaGetterName(Definition definition);
+    String getJavaClassExtends(Definition var1, Mode var2);
 
-    /**
-     * This is applied to definitions that can result in getters of a container.
-     * For example, the definition could be a {@link ColumnDefinition}, the
-     * container a {@link TableDefinition}. Then this would apply to records and
-     * POJOs. Also, the definition could be an {@link AttributeDefinition} and
-     * the container a {@link UDTDefinition}
-     *
-     * @return The Java getter method name representing this object, e.g.
-     *         [getMyTable]
-     */
-    String getJavaGetterName(Definition definition, Mode mode);
+    List<String> getGlobalReferencesJavaClassImplements(Definition var1, Class<? extends Definition> var2);
 
-    /**
-     * This is applied to definitions that can result in methods. For example,
-     * the definition could be a {@link RoutineDefinition}
-     * <p>
-     * This is the same as calling
-     * <code>getJavaMethodName(definition, Mode.DEFAULT)</code>
-     *
-     * @return The Java method name representing this object, e.g. [myFunction]
-     */
-    String getJavaMethodName(Definition definition);
+    List<String> getJavaClassImplements(Definition var1);
 
-    /**
-     * This is applied to definitions that can result in methods. For example,
-     * the definition could be a {@link RoutineDefinition}
-     *
-     * @return The Java method name representing this object, e.g. [myFunction]
-     */
-    String getJavaMethodName(Definition definition, Mode mode);
+    List<String> getJavaClassImplements(Definition var1, Mode var2);
 
-    /**
-     * @return The super class name of the global references class for a given
-     *         definition type, e.g. [com.example.AbstractPojo]. If this returns
-     *         <code>null</code> or an empty string, then no super class is
-     *         extended.
-     */
-    String getGlobalReferencesJavaClassExtends(Definition container, Class<? extends Definition> objectType);
+    String getGlobalReferencesJavaClassName(Definition var1, Class<? extends Definition> var2);
 
-    /**
-     * This is the same as calling
-     * <code>getJavaClassExtends(definition, Mode.DEFAULT)</code>
-     *
-     * @return The super class name of the Java class representing this object,
-     *         e.g. [com.example.AbstractPojo]. If this returns
-     *         <code>null</code> or an empty string, then no super class is
-     *         extended.
-     */
-    String getJavaClassExtends(Definition definition);
+    String getJavaClassName(Definition var1);
 
-    /**
-     * @return The super class name of the Java class representing this object,
-     *         e.g. [com.example.AbstractPojo]. If this returns
-     *         <code>null</code> or an empty string, then no super class is
-     *         extended.
-     */
-    String getJavaClassExtends(Definition definition, Mode mode);
+    String getJavaClassName(Definition var1, Mode var2);
 
-    /**
-     * @return The implemented interface names of the global references class
-     *         for a given definition type, e.g. [com.example.Pojo]. If this
-     *         returns <code>null</code> or an empty list, then no interfaces
-     *         are implemented.
-     */
-    List<String> getGlobalReferencesJavaClassImplements(Definition container, Class<? extends Definition> objectType);
+    String getGlobalReferencesJavaPackageName(Definition var1, Class<? extends Definition> var2);
 
-    /**
-     * This is the same as calling
-     * <code>getJavaClassImplements(definition, Mode.DEFAULT)</code>
-     *
-     * @return The implemented interface names of the Java class name
-     *         representing this object, e.g. [com.example.Pojo] If this returns
-     *         <code>null</code> or an empty list, then no interfaces are
-     *         implemented.
-     */
-    List<String> getJavaClassImplements(Definition definition);
+    String getJavaPackageName(Definition var1);
 
-    /**
-     * @return The implemented interface names of the Java class name
-     *         representing this object, e.g. [com.example.Pojo]. If this
-     *         returns <code>null</code> or an empty list, then no interfaces
-     *         are implemented.
-     */
-    List<String> getJavaClassImplements(Definition definition, Mode mode);
+    String getJavaPackageName(Definition var1, Mode var2);
 
-    /**
-     * @return The Java class name of the global references class for a given
-     *         definition type, e.g. [MyTableSuffix]
-     */
-    String getGlobalReferencesJavaClassName(Definition container, Class<? extends Definition> objectType);
+    String getJavaMemberName(Definition var1);
 
-    /**
-     * This is the same as calling
-     * <code>getJavaClassName(definition, Mode.DEFAULT)</code>
-     *
-     * @return The Java class name representing this object, e.g. [MyTable]
-     */
-    String getJavaClassName(Definition definition);
+    String getJavaMemberName(Definition var1, Mode var2);
 
-    /**
-     * @return The Java class name representing this object, e.g.
-     *         [MyTableSuffix]
-     */
-    String getJavaClassName(Definition definition, Mode mode);
+    String getGlobalReferencesFullJavaClassName(Definition var1, Class<? extends Definition> var2);
 
-    /**
-     * @return The Java package name of the global references class for a given
-     *         definition type, e.g. [org.jooq.generated]
-     */
-    String getGlobalReferencesJavaPackageName(Definition container, Class<? extends Definition> objectType);
+    String getFullJavaClassName(Definition var1);
 
-    /**
-     * This is the same as calling
-     * <code>getJavaPackageName(definition, Mode.DEFAULT)</code>
-     *
-     * @return The Java package name of this object, e.g. [org.jooq.generated]
-     */
-    String getJavaPackageName(Definition definition);
+    String getFullJavaClassName(Definition var1, Mode var2);
 
-    /**
-     * @return The Java package name of this object, e.g. [org.jooq.generated]
-     */
-    String getJavaPackageName(Definition definition, Mode mode);
+    String getGlobalReferencesFileName(Definition var1, Class<? extends Definition> var2);
 
-    /**
-     * The "java member name" is applied where a definition is used as a member
-     * (for POJOs) or as a method argument (for setters). Example definitions
-     * are
-     * <ul>
-     * <li>{@link ColumnDefinition}</li>
-     * <li>{@link ParameterDefinition}</li>
-     * <li>{@link AttributeDefinition}</li>
-     * </ul>
-     * This is the same as calling
-     * <code>getJavaMemberName(definition, Mode.DEFAULT)</code>
-     *
-     * @return The Java class name representing this object, starting with a
-     *         lower case character, e.g. [myTable]
-     */
-    String getJavaMemberName(Definition definition);
+    String getFileName(Definition var1);
 
-    /**
-     * The "java member name" is applied where a definition is used as a member
-     * (for POJOs) or as a method argument (for setters). Example definitions
-     * are
-     * <ul>
-     * <li>{@link ColumnDefinition}</li>
-     * <li>{@link ParameterDefinition}</li>
-     * <li>{@link AttributeDefinition}</li>
-     * </ul>
-     *
-     * @return The Java class name representing this object, starting with a
-     *         lower case character, e.g. [myTableSuffix]
-     */
-    String getJavaMemberName(Definition definition, Mode mode);
+    String getFileName(Definition var1, Mode var2);
 
-    /**
-     * @return The full Java class name of the global references class for a
-     *         given definition type, e.g. [org.jooq.generated.MyTable]
-     */
-    String getGlobalReferencesFullJavaClassName(Definition container, Class<? extends Definition> objectType);
-
-    /**
-     * @return The full Java class name representing this object, e.g.
-     *         [org.jooq.generated.MyTable]
-     */
-    String getFullJavaClassName(Definition definition);
-
-    /**
-     * This is the same as calling
-     * <code>getFullJavaClassName(definition, Mode.DEFAULT)</code>
-     *
-     * @return The full Java class name representing this object, e.g.
-     *         [org.jooq.generated.MyTable][suffix]
-     */
-    String getFullJavaClassName(Definition definition, Mode mode);
-
-    /**
-     * @return The Java class file name of the global references class for a
-     *         given definition type, e.g. [MyTable.java]
-     */
-    String getGlobalReferencesFileName(Definition container, Class<? extends Definition> objectType);
-
-    /**
-     * @return The Java class file name representing this object, e.g.
-     *         [MyTable.java]
-     */
-    String getFileName(Definition definition);
-
-    /**
-     * @return The Java class file name representing this object, e.g.
-     *         [MyTableSuffix.java]
-     */
-    String getFileName(Definition definition, Mode mode);
-
-    /**
-     * @return The directory containing all Java objects, e.g.
-     *         [C:\org\jooq\generated]
-     */
     File getFileRoot();
 
-    /**
-     * @return The Java class file name of the global references class for a
-     *         given definition type, e.g. [C:\org\jooq\generated\MyTable.java]
-     */
-    File getGlobalReferencesFile(Definition container, Class<? extends Definition> objectType);
+    File getGlobalReferencesFile(Definition var1, Class<? extends Definition> var2);
 
-    /**
-     * @return The Java class file name representing this object, e.g.
-     *         [C:\org\jooq\generated\MyTable.java]
-     */
-    File getFile(Definition definition);
+    File getFile(Definition var1);
 
-    /**
-     * @return The Java class file name representing this object, e.g.
-     *         [C:\org\jooq\generated\MyTableSuffix.java]
-     */
-    File getFile(Definition definition, Mode mode);
+    File getFile(Definition var1, Mode var2);
 
-    /**
-     * @return The Java class file name representing this object, e.g.
-     *         [C:\org\jooq\generated\fileName]
-     */
-    File getFile(String fileName);
+    File getFile(String var1);
 
-    /**
-     * @return The Java class file header of the global references class for a
-     *         given definition type, e.g. <pre><code>
-     * This file is generated by jOOQ.
-     * </code></pre>
-     */
-    String getGlobalReferencesFileHeader(Definition container, Class<? extends Definition> objectType);
+    String getGlobalReferencesFileHeader(Definition var1, Class<? extends Definition> var2);
 
-    /**
-     * @return The Java class file header, e.g. <pre><code>
-     * This file is generated by jOOQ.
-     * </code></pre>
-     */
-    String getFileHeader(Definition definition);
+    String getFileHeader(Definition var1);
 
-    /**
-     * @return The Java class file header, e.g. <pre><code>
-     * This file is generated by jOOQ.
-     * </code></pre>
-     */
-    String getFileHeader(Definition definition, Mode mode);
+    String getFileHeader(Definition var1, Mode var2);
 
-    /**
-     * @return The overload suffix to be applied when generating overloaded
-     *         routine artefacts, e.g.
-     *         <code>"_OverloadIndex_" + overloadIndex</code>
-     */
-    String getOverloadSuffix(Definition definition, Mode mode, String overloadIndex);
+    String getOverloadSuffix(Definition var1, Mode var2, String var3);
 
     /**
      * The "mode" by which an artefact should be named

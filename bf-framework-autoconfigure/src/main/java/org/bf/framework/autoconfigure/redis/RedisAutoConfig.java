@@ -27,8 +27,6 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.PropertyMapper;
-import org.springframework.boot.ssl.SslBundle;
-import org.springframework.boot.ssl.SslOptions;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.*;
@@ -46,7 +44,6 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
-import javax.net.ssl.SSLParameters;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -299,21 +296,22 @@ public class RedisAutoConfig implements EnableConfigHandler<RedisProperties> {
             builder.socketOptions(SocketOptions.builder().connectTimeout(connectTimeout).build());
         }
         builder.timeoutOptions(TimeoutOptions.enabled());
-        SslBundle sslBundle = useSSL(properties);
-        if (sslBundle == null) {
-            return builder.build();
-        }
-        io.lettuce.core.SslOptions.Builder sslOptionsBuilder = io.lettuce.core.SslOptions.builder();
-        sslOptionsBuilder.keyManager(sslBundle.getManagers().getKeyManagerFactory());
-        sslOptionsBuilder.trustManager(sslBundle.getManagers().getTrustManagerFactory());
-        SslOptions sslOptions = sslBundle.getOptions();
-        if (sslOptions.getCiphers() != null) {
-            sslOptionsBuilder.cipherSuites(sslOptions.getCiphers());
-        }
-        if (sslOptions.getEnabledProtocols() != null) {
-            sslOptionsBuilder.protocols(sslOptions.getEnabledProtocols());
-        }
-        return builder.sslOptions(sslOptionsBuilder.build()).build();
+//        SslBundle sslBundle = useSSL(properties);
+//        if (sslBundle == null) {
+//            return builder.build();
+//        }
+//        io.lettuce.core.SslOptions.Builder sslOptionsBuilder = io.lettuce.core.SslOptions.builder();
+//        sslOptionsBuilder.keyManager(sslBundle.getManagers().getKeyManagerFactory());
+//        sslOptionsBuilder.trustManager(sslBundle.getManagers().getTrustManagerFactory());
+//        SslOptions sslOptions = sslBundle.getOptions();
+//        if (sslOptions.getCiphers() != null) {
+//            sslOptionsBuilder.cipherSuites(sslOptions.getCiphers());
+//        }
+//        if (sslOptions.getEnabledProtocols() != null) {
+//            sslOptionsBuilder.protocols(sslOptions.getEnabledProtocols());
+//        }
+//        return builder.sslOptions(sslOptionsBuilder.build()).build();
+        return builder.build();
     }
 
     private static ClientOptions.Builder initializeClientOptionsBuilder(RedisProperties properties) {
@@ -350,13 +348,13 @@ public class RedisAutoConfig implements EnableConfigHandler<RedisProperties> {
             return config;
         }
     }
-    public SslBundle useSSL(RedisProperties properties){
-        org.springframework.boot.autoconfigure.data.redis.RedisProperties.Ssl ssl = properties.getSsl();
-        if (ssl== null || !ssl.isEnabled()) {
-            return null;
-        }
-        return getBundle(ssl.getBundle());
-    }
+//    public SslBundle useSSL(RedisProperties properties){
+//        org.springframework.boot.autoconfigure.data.redis.RedisProperties.Ssl ssl = properties.getSsl();
+//        if (ssl== null || !ssl.isEnabled()) {
+//            return null;
+//        }
+//        return getBundle(ssl.getBundle());
+//    }
     //------------------------------------------- JedisClientConfiguration-------------------------------
     private JedisConnectionFactory createJedisConnectionFactory(RedisProperties properties) {
         JedisClientConfiguration clientConfiguration = getJedisClientConfiguration(properties);
@@ -374,17 +372,17 @@ public class RedisAutoConfig implements EnableConfigHandler<RedisProperties> {
     private JedisClientConfiguration getJedisClientConfiguration(RedisProperties properties) {
         JedisClientConfiguration.JedisClientConfigurationBuilder builder = applyProperties(properties);
         builder.usePooling().poolConfig(jedisPoolConfig(properties.getPool()));
-        SslBundle sslBundle = useSSL(properties);
-        if (sslBundle != null) {
-            JedisClientConfiguration.JedisSslClientConfigurationBuilder sslBuilder = builder.useSsl();
-            sslBuilder.sslSocketFactory(sslBundle.createSslContext().getSocketFactory());
-            SslOptions sslOptions = sslBundle.getOptions();
-            SSLParameters sslParameters = new SSLParameters();
-            PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
-            map.from(sslOptions.getCiphers()).to(sslParameters::setCipherSuites);
-            map.from(sslOptions.getEnabledProtocols()).to(sslParameters::setProtocols);
-            sslBuilder.sslParameters(sslParameters);
-        }
+//        SslBundle sslBundle = useSSL(properties);
+//        if (sslBundle != null) {
+//            JedisClientConfiguration.JedisSslClientConfigurationBuilder sslBuilder = builder.useSsl();
+//            sslBuilder.sslSocketFactory(sslBundle.createSslContext().getSocketFactory());
+//            SslOptions sslOptions = sslBundle.getOptions();
+//            SSLParameters sslParameters = new SSLParameters();
+//            PropertyMapper map = PropertyMapper.get().alwaysApplyingWhenNonNull();
+//            map.from(sslOptions.getCiphers()).to(sslParameters::setCipherSuites);
+//            map.from(sslOptions.getEnabledProtocols()).to(sslParameters::setProtocols);
+//            sslBuilder.sslParameters(sslParameters);
+//        }
         return builder.build();
     }
 
