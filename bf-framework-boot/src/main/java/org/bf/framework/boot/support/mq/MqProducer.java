@@ -1,16 +1,11 @@
 package org.bf.framework.boot.support.mq;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  */
-public interface MqProducer {
-    default void send(String topic, String data) {
-        this.send(topic,null,data);
-    }
-
-    default void send(String topic, String key, String data) {
-        send(topic,null,key,data);
-    }
-
-    void send(String topic, Integer partition, String key, String data);
+public interface MqProducer<T> {
+    CompletableFuture<T> asyncSend(String topic, Object data);
+    T syncSend(String topic,Object data);
 }
 

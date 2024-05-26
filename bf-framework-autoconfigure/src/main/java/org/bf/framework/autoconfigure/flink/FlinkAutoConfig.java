@@ -2,7 +2,7 @@ package org.bf.framework.autoconfigure.flink;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
-import org.apache.flink.connector.base.DeliveryGuarantee;
+//import org.apache.flink.connector.base.DeliveryGuarantee;
 import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.connector.kafka.sink.KafkaSinkBuilder;
 import org.apache.flink.connector.kafka.source.KafkaSource;
@@ -116,7 +116,7 @@ public class FlinkAutoConfig implements EnableConfigHandler<FlinkProperties> {
             for (String schema: p.getSinkSet()) {
                 String typeSchema = TYPE_KAFKA + DOT + schema;
                 KafkaProperties cfg = YamlUtil.configBind(PREFIX_KAFKA,schema,new KafkaProperties());
-                KafkaSinkBuilder<String> sinkBuilder = KafkaSink.<String>builder()
+                KafkaSinkBuilder<String> sinkBuilder = KafkaSink.<String>builder();
                         //涉及到topic，留给业务自定义
 //                        .setRecordSerializer(KafkaRecordSerializationSchema.builder()
 //                                .setTopic("topic-name")
@@ -124,7 +124,7 @@ public class FlinkAutoConfig implements EnableConfigHandler<FlinkProperties> {
 //                                .setKeySerializationSchema(new SimpleStringSchema())
 //                                .build()
 //                        )
-                        .setDeliveryGuarantee(DeliveryGuarantee.AT_LEAST_ONCE);
+//                        .setDeliveryGuarantee(DeliveryGuarantee.AT_LEAST_ONCE);
                 Map<String, Object> producerProps = cfg.buildProducerProperties(SpringUtil.getBean(SslBundles.class));
                 if(MapUtils.isNotEmpty(producerProps)) {
                     producerProps.forEach((k,v) -> sinkBuilder.setProperty(k,String.valueOf(v)));

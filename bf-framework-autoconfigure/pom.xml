@@ -189,34 +189,6 @@
             <artifactId>curator-x-discovery</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- dubbo -->
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-zookeeper-curator5-spring-boot-starter</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-native</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>com.taobao.arthas</groupId>
-            <artifactId>arthas-spring-boot-starter</artifactId>
-            <optional>true</optional>
-        </dependency>
-        -->
         <!-- skywalking -->
         <dependency>
             <groupId>org.apache.skywalking</groupId>
@@ -350,13 +322,11 @@
             <artifactId>sentinel-datasource-zookeeper</artifactId>
             <optional>true</optional>
         </dependency>
-        <!--
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-datasource-nacos</artifactId>
             <optional>true</optional>
         </dependency>
-        -->
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <!-- 热点参数限流  -->
@@ -366,6 +336,39 @@
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-apache-dubbo3-adapter</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- nacos -->
+        <dependency>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-spring-context</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- rocketmq -->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- 支付 pay-->
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-pay</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.paypal.sdk</groupId>
+            <artifactId>checkout-sdk</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>

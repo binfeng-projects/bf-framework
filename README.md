@@ -53,29 +53,29 @@
 很多调优配置有默认值自动继承，当然也支持业务覆盖(配合Apollo等配置中心，可以实现非常灵活，多优先级的覆盖规则,业务代码不再写死，
 配置复杂度又如同单实例。）支持集群维度的扩展。 一个示例配置如下:
 ```yaml
-bf: #配置了三个数据源，启用其中两个
-    datasource:
-        enabled: 'order-center,pay-center'
-        order-center:
-            url: jdbc:mysql://127.0.0.1:3306/order_center?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&rewriteBatchedStatements=true
-            username: root
-            password: 111111
-        pay-center:
-            url: jdbc:mysql://127.0.0.1:3306/pay_center?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&rewriteBatchedStatements=true
-            username: root
-            password: 111111
-        test-db:
-            url: jdbc:mysql://127.0.0.1:3306/test-db?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&rewriteBatchedStatements=true
-            username: root
-            password: 111111
+#配置了三个数据源，启用其中两个
+datasource:
+    enabled: 'order-center,pay-center'
+    order-center:
+        url: jdbc:mysql://127.0.0.1:3306/order_center?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&rewriteBatchedStatements=true
+        username: root
+        password: 111111
+    pay-center:
+        url: jdbc:mysql://127.0.0.1:3306/pay_center?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&rewriteBatchedStatements=true
+        username: root
+        password: 111111
+    test-db:
+        url: jdbc:mysql://127.0.0.1:3306/test-db?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&rewriteBatchedStatements=true
+        username: root
+        password: 111111
 ```
 甚至可以进一步简化。最佳实践是，业务不要直接对接bf-framework。中间件团队再抽一个工程来（可参考[middleware-integration](https://github.com/binfeng-projects/middleware-integration)）对接bf-framework。
 middleware-integration可配置全公司常用的所有中间件。其他业务项目都依赖middleware-integration即可。那么业务最极致简单的情况下，只需要一行配置，如下：
 
 ```yaml
-bf: #配置了三个数据源，启用其中两个
-    datasource:
-        enabled: 'order-center,pay-center'
+#配置了三个数据源，启用其中两个
+datasource:
+   enabled: 'order-center,pay-center'
 ```
 业务甚至都不关心地址，账户密码。我仅仅只是想要启我想要启用的实例。至于它的细节我不关心。
 
@@ -114,10 +114,6 @@ excel处理啦，加解密啦什么的。试试看这个hutool这个吧。除了
 
 -------------------------------------------------------------------------------
 ## 📝文档 (待详细补充)
-抱歉，可能暂时就没时间详细出了。个人建议 不是初学者的直接看源码吧（其实初学者也是建议直接看源码），程序员之间，或者程序员和开源项目之间交流的最好方式就是看源码。
-上面提到的接入bf-framework最佳实践的[middleware-integration](https://github.com/binfeng-projects/middleware-integration)工程，该项目中的单元
-测试代码可以作为example工程，看源码和example永远是了解项目最好最快的方式。顺便提一下，需要本地看spring源码又主要构建工具是maven的 可以移步本人主页。为了方便看源码和随
-时能自己本地源码打包，本人已经将spring和spring-boot工程maven化改造，欢迎clone和star
 
 ------------------------------------------------------------------------------
 

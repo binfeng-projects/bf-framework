@@ -1,9 +1,9 @@
 package org.bf.framework.autoconfigure.redis;
 
+import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.boot.support.cache.sync.CacheSync;
 import org.bf.framework.boot.support.cache.sync.SyncCacheProperties;
-import org.bf.framework.common.util.JSON;
 import org.bf.framework.common.util.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 

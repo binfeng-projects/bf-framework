@@ -6,7 +6,7 @@ package org.bf.framework.boot.constant;
 public interface FrameworkConst {
     String DOT =".";
     String DEFAULT = "default";
-    String BF = "bf";
+    String FRAMEWORK_NAME = "bf";
 
     String PRIMARY = "primary";
     /**
@@ -16,10 +16,10 @@ public interface FrameworkConst {
      * 如果你恰好和框架命名默认规则一致，即"local,dev,test,pre,prod"
      * 那么什么都不用传
      */
-    String INPUT_ENV_KEY = BF + DOT +"envs";
+    String INPUT_ENV_KEY = FRAMEWORK_NAME + DOT +"envs";
     String APP_NAME_KEY = "spring.application.name";
 
-    String FRAMEWORK_KEY = BF +"-framework";
+    String FRAMEWORK_KEY = FRAMEWORK_NAME +"-framework";
     String FRAMEWORK_VERSION_KEY = FRAMEWORK_KEY + DOT +"version";
     /**
      * 支持多集群环境，通过-Dbf.cluster 传入
@@ -27,8 +27,8 @@ public interface FrameworkConst {
      * 类似apollo等配置中心的default概念，传入后，也可以通过本工具类static方法获取
      * 以便业务做一些集群方面的逻辑。如果不传，就是"default"集群
      */
-    String CURRENT_CLUSTER_KEY = BF + DOT +"cluster";
-    String CURRENT_ENV_KEY = BF + DOT +"env";
+    String CURRENT_CLUSTER_KEY = FRAMEWORK_NAME + DOT +"cluster";
+    String CURRENT_ENV_KEY = FRAMEWORK_NAME + DOT +"env";
 
 
     //-----------------------------配置文件相关----------------------------------

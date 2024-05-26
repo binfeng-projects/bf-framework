@@ -25,11 +25,13 @@
         <module>bf-framework-starter-xxljob</module>
         <module>bf-framework-starter-zookeeper</module>
         <module>bf-framework-starter-actuator</module>
-        <module>bf-framework-starter-dubbo</module>
         <module>bf-framework-starter-storage</module>
         <module>bf-framework-starter-vms</module>
         <module>bf-framework-starter-elasticsearch</module>
         <module>bf-framework-starter-apollo</module>
         <module>bf-framework-starter-sentinel</module>
+        <module>bf-framework-starter-nacos</module>
+        <module>bf-framework-starter-rocketmq</module>
+        <module>bf-framework-starter-pay</module>
     </modules>
 </project>

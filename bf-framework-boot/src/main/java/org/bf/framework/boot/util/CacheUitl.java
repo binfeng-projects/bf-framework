@@ -1,10 +1,10 @@
 package org.bf.framework.boot.util;
 
+import com.alibaba.fastjson2.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.boot.support.Middleware;
 import org.bf.framework.boot.support.cache.sync.SyncCacheProperties;
 import org.bf.framework.common.util.CollectionUtils;
-import org.bf.framework.common.util.JSON;
 import org.bf.framework.common.util.StringUtils;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;

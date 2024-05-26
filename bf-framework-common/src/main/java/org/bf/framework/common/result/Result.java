@@ -57,6 +57,20 @@ public class Result<T> implements Const {
         result.setMsg(message);
         return result;
     }
+    public static <T> Result<T> fail(String message,T model){
+        Result<T> result = new Result<T>();
+        result.setBody(model);
+        result.setCode(CODE_SYSTEM_ERROR);
+        result.setMsg(message);
+        return result;
+    }
+    public static <T> Result<T> fail(Integer code, String message,T model){
+        Result<T> result = new Result<T>();
+        result.setBody(model);
+        result.setCode(code);
+        result.setMsg(message);
+        return result;
+    }
     public static <T> Result<T> fail(IdIntegerEnum errEnum){
         Result<T> result = new Result<T>();
         result.setBody(null);

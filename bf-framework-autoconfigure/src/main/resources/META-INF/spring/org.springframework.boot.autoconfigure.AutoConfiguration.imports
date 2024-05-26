@@ -1,3 +1,10 @@
+#org.bf.framework.autoconfigure.skywalking.SkywalkingAutoConfig
+org.bf.framework.autoconfigure.flink.FlinkAutoConfig
+org.bf.framework.autoconfigure.hadoop.HadoopAutoConfig
+org.bf.framework.autoconfigure.hbase.HbaseAutoConfig
+org.bf.framework.autoconfigure.hive.HiveAutoConfig
+org.bf.framework.autoconfigure.yarn.YarnAutoConfig
+org.bf.framework.autoconfigure.batch.BatchAutoConfig
 org.bf.framework.autoconfigure.jdbc.JdbcAutoConfig
 org.bf.framework.autoconfigure.jooq.JooqAutoConfig
 org.bf.framework.autoconfigure.mybatis.MybatisAutoConfig
@@ -9,13 +16,9 @@ org.bf.framework.autoconfigure.xxljob.XxlJobAutoConfig
 org.bf.framework.autoconfigure.storage.StorageAutoConfig
 org.bf.framework.autoconfigure.vms.VmsAutoConfig
 org.bf.framework.autoconfigure.zookeeper.ZookeeperAutoConfig
-#org.bf.framework.autoconfigure.skywalking.SkywalkingAutoConfig
-org.bf.framework.autoconfigure.flink.FlinkAutoConfig
-org.bf.framework.autoconfigure.hadoop.HadoopAutoConfig
-org.bf.framework.autoconfigure.hbase.HbaseAutoConfig
-org.bf.framework.autoconfigure.hive.HiveAutoConfig
-org.bf.framework.autoconfigure.yarn.YarnAutoConfig
-org.bf.framework.autoconfigure.batch.BatchAutoConfig
 org.bf.framework.autoconfigure.actuator.ActuatorAutoConfig
 org.bf.framework.autoconfigure.sentinel.SentinelAutoConfig
+org.bf.framework.autoconfigure.nacos.NacosAutoConfig
+org.bf.framework.autoconfigure.rocketmq.RocketMQAutoConfig
 org.bf.framework.autoconfigure.FrameworkAutoConfig
+org.bf.framework.autoconfigure.pay.PayAutoConfig

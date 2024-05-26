@@ -1,11 +1,7 @@
 package org.bf.framework.common.result;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**

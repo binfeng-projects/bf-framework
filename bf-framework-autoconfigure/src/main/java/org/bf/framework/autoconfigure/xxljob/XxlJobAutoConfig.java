@@ -22,7 +22,7 @@ public class XxlJobAutoConfig {
 
     @Bean
     @ConditionalOnMissingBean(XxlJobSpringExecutor.class)
-    @ConditionalOnProperty(name = "bf.xxl.enabled", havingValue = "true")
+    @ConditionalOnProperty(name = "xxl.enabled", havingValue = "true",matchIfMissing = true)
     public XxlJobSpringExecutor xxlJobSpringExecutor() {
         if (cfg.getExecutor() == null) {
             throw new RuntimeException("execute cannot be empty");

@@ -4,6 +4,7 @@ import cn.hutool.core.util.ServiceLoaderUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.bf.framework.boot.spi.EnvironmentConvertSystemProperty;
 import org.bf.framework.boot.spi.EnvironmentPropertyPostProcessor;
 import org.bf.framework.boot.util.SpringInjector;
 import org.bf.framework.boot.util.SpringUtil;
@@ -24,19 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 import static org.bf.framework.boot.constant.FrameworkConst.*;
-import static org.bf.framework.boot.constant.MiddlewareConst.*;
 
 @Slf4j
 public class SystemHelp {
     //所有环境的枚举
     private static final Map<EnvEnum, String> ENV_MAP = MapUtils.newHashMap();
-
-    //enviroment中变量塞到System.setProperty中
-    private static final Map<String, String> ENV_SYSTEM_PROPERTY_CONVERT = MapUtils.newHashMap();
-    static {
-        //key是三方中间件需要的key,v是我们配置文件配的key
-        ENV_SYSTEM_PROPERTY_CONVERT.put("csp.sentinel.dashboard.server",PREFIX_SENTINEL + DOT + "dashboard");
-    }
     /**
      * 框架并不知道外界对环境的命名规则，虽然标准上大家应该都分本地，dev,test,pre,prod五个环境，但是叫法可能不一样
      * 支持-D传入告诉框架，框架会针对不同环境做些特殊逻辑，比如很多时候dev,test方便测试会不做鉴权
@@ -69,10 +62,20 @@ public class SystemHelp {
     public static void registerSystemProperty(ConfigurableEnvironment env) {
         //sentinel
         System.setProperty("project.name", env.getProperty("project.name", SpringUtil.appName()));
-        for (Map.Entry<String,String> entry : ENV_SYSTEM_PROPERTY_CONVERT.entrySet()) {
-            String cfgValue = env.getProperty(entry.getValue()); //例如，bf.sentinel.dashboard
-            if(StringUtils.isNotBlank(cfgValue)) {
-                System.setProperty(entry.getKey(), cfgValue);
+        List<EnvironmentConvertSystemProperty> list = ServiceLoaderUtil.loadList(EnvironmentConvertSystemProperty.class);
+        if(CollectionUtils.isNotEmpty(list)) {
+            list.sort(Comparator.comparingInt(Ordered::getOrder));
+            for (EnvironmentConvertSystemProperty processor: list) {
+                Map<String,String> convertMap = processor.keyMaps();
+                if(MapUtils.isEmpty(convertMap)) {
+                    continue;
+                }
+                for (Map.Entry<String,String> entry : convertMap.entrySet()) {
+                    String cfgValue = env.getProperty(entry.getValue());
+                    if(StringUtils.isNotBlank(cfgValue)) {
+                        System.setProperty(entry.getKey(), cfgValue);
+                    }
+                }
             }
         }
     }
@@ -81,20 +84,19 @@ public class SystemHelp {
      */
     public static void registerEnvironmentProperty(ConfigurableEnvironment env) {
         List<EnvironmentPropertyPostProcessor> list = ServiceLoaderUtil.loadList(EnvironmentPropertyPostProcessor.class);
-        if(CollectionUtils.isEmpty(list)) {
-            return;
-        }
-        list.sort(Comparator.comparingInt(Ordered::getOrder));
-        for (EnvironmentPropertyPostProcessor processor: list) {
-            Map<String,Object> property = loadIfConfigFileProperty(processor.classPathConfigFileKey());
-            if(MapUtils.isEmpty(property)) {
-                property = processor.simpleProperties();
+        if(CollectionUtils.isNotEmpty(list)) {
+            list.sort(Comparator.comparingInt(Ordered::getOrder));
+            for (EnvironmentPropertyPostProcessor processor: list) {
+                Map<String,Object> property = loadIfConfigFileProperty(processor.classPathConfigFileKey());
+                if(MapUtils.isEmpty(property)) {
+                    property = processor.simpleProperties();
+                }
+                if(MapUtils.isEmpty(property)) {
+                    continue;
+                }
+                MapPropertySource source = new MapPropertySource(processor.getClass().getName(), property);
+                env.getPropertySources().addLast(source);
             }
-            if(MapUtils.isEmpty(property)) {
-                continue;
-            }
-            MapPropertySource source = new MapPropertySource(processor.getClass().getName(), property);
-            env.getPropertySources().addLast(source);
         }
         //加载框架默认配置，例如一些连接池的默认配置等等
         PropertySource<?> commonCfg = parseClassPathConfig(FRAMEWORK_KEY);

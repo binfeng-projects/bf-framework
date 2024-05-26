@@ -1,12 +1,12 @@
 package org.bf.framework.autoconfigure.spi;
 
+import com.alibaba.fastjson2.JSON;
 import com.ctrip.framework.apollo.core.ApolloClientSystemConsts;
 import com.ctrip.framework.apollo.core.dto.ApolloConfig;
 import com.ctrip.framework.apollo.spring.config.PropertySourcesConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.boot.spi.EnvironmentPropertyPostProcessor;
 import org.bf.framework.boot.util.SpringUtil;
-import org.bf.framework.common.util.JSON;
 import org.bf.framework.common.util.MapUtils;
 import org.bf.framework.common.util.StringUtils;
 import org.bf.framework.common.util.http.HttpUtil;
@@ -19,8 +19,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static org.bf.framework.boot.constant.FrameworkConst.*;
-import static org.bf.framework.boot.constant.MiddlewareConst.*;
+import static org.bf.framework.boot.constant.FrameworkConst.DEFAULT;
+import static org.bf.framework.boot.constant.FrameworkConst.DOT;
+import static org.bf.framework.boot.constant.MiddlewareConst.PREFIX_APOLLO;
 
 @Slf4j
 public class ApolloEnvironmentProperty implements EnvironmentPropertyPostProcessor {

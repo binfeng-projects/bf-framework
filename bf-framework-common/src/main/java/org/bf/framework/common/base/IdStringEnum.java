@@ -7,7 +7,7 @@ public interface IdStringEnum extends PkAble<String>,RemarkAble{
         }
         E[] enumConstants = eClass.getEnumConstants();
         for (E e : enumConstants) {
-            if (id.equals(e.getId())){
+            if (id.equalsIgnoreCase(e.getId())){
                 return e;
             }
         }

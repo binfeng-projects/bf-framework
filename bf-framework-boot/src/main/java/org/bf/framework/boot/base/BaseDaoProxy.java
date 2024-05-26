@@ -1,5 +1,6 @@
 package org.bf.framework.boot.base;
 
+import com.alibaba.fastjson2.JSON;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -13,7 +14,6 @@ import org.bf.framework.common.base.BaseEntity;
 import org.bf.framework.common.base.StartEndSelect;
 import org.bf.framework.common.constant.Const;
 import org.bf.framework.common.result.PageResult;
-import org.bf.framework.common.util.JSON;
 import org.bf.framework.common.util.MapUtils;
 import org.bf.framework.common.util.StringUtils;
 import org.bf.framework.common.util.sql.CanalMessage;
@@ -64,7 +64,7 @@ public class BaseDaoProxy<PK extends Number,DTO extends BaseDTO<PK>,Entity exten
     public List<DTO> selectStartLimit(Number startId, Long limit) {
         return convert.entityToDtoList(dao.selectStartLimit(startId,limit));
     }
-    public void doEtl(MqProducer mq,final String topic) {
+    public <T> void doEtl(MqProducer<T> mq,final String topic) {
         dao.doScan(0L,null,true,e -> {
             CanalMessage msg = new CanalMessage();
             String schema = e.getSchemaName();
@@ -84,7 +84,7 @@ public class BaseDaoProxy<PK extends Number,DTO extends BaseDTO<PK>,Entity exten
                 //默认etl全量同步topic名etl_env_db_table
                 finalTopic = SpringUtil.getEnvironment().getProperty("canal.etl-topic-prefix") + "_" + schema  + "_" + table;
             }
-            mq.send(finalTopic, JSON.toJSONString(msg));
+            mq.asyncSend(finalTopic, JSON.toJSONString(msg));
         });
     }
 

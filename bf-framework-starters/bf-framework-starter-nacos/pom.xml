@@ -6,23 +6,15 @@
         <artifactId>bf-framework-starters</artifactId>
         <version>${revision}</version>
     </parent>
-    <artifactId>bf-framework-starter-dubbo</artifactId>
+    <artifactId>bf-framework-starter-nacos</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.bf.framework</groupId>
             <artifactId>bf-framework-autoconfigure</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.bf.framework</groupId>
-            <artifactId>bf-framework-starter-zookeeper</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.protobuf</groupId>
-            <artifactId>protobuf-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo</artifactId>
+            <groupId>com.alibaba.nacos</groupId>
+            <artifactId>nacos-spring-context</artifactId>
         </dependency>
     </dependencies>
 </project>

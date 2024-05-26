@@ -41,6 +41,7 @@
                 <artifactId>${appName}-server</artifactId>
                 [#noparse]<version>${project.version}</version>[/#noparse]
             </dependency>
+            <!-- 中间件 -->
             <dependency>
                 <groupId>${middlewareGroupId}</groupId>
                 <artifactId>${middlewareArtifactId}</artifactId>
@@ -48,9 +49,12 @@
             </dependency>
             <dependency>
                 <groupId>org.bf.framework</groupId>
-                <artifactId>bf-framework-test</artifactId>
+                <artifactId>bf-framework</artifactId>
                 [#noparse]<version>${bf-framework.version}</version>[/#noparse]
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
+            <!-- 业务 -->
         </dependencies>
     </dependencyManagement>
     <modules>

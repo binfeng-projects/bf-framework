@@ -30,7 +30,7 @@
         <jar.slf4j>2.0.7</jar.slf4j>
         <jar.okhttp>4.12.0</jar.okhttp>
         <jar.okio>3.6.0</jar.okio>
-        <jar.gson>2.10.1</jar.gson>
+        <jar.fastjson2>2.0.49</jar.fastjson2>
         <jar.guice>7.0.0</jar.guice>
         <jar.hutool>5.8.21</jar.hutool>
         <jar.xml>4.0.0</jar.xml>
@@ -39,13 +39,12 @@
         <!-- autoconfig的依赖 -->
         <jar.apollo>2.1.0</jar.apollo>
         <jar.xxl>2.4.0</jar.xxl>
-        <dubbo.version>3.2.6</dubbo.version>
         <jar.protobuf>3.19.6</jar.protobuf>
         <jar.curator>5.5.0</jar.curator>
         <jar.sentinel>1.8.7</jar.sentinel>
         <jar.arthas>3.6.7</jar.arthas>
         <jar.skywalking>9.0.0</jar.skywalking>
-        <jar.flink>1.19-SNAPSHOT</jar.flink>
+        <jar.flink>1.19.0</jar.flink>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -210,11 +209,6 @@
             </dependency>
             <dependency>
                 <groupId>org.bf.framework</groupId>
-                <artifactId>bf-framework-starter-dubbo</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.bf.framework</groupId>
                 <artifactId>bf-framework-starter-actuator</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -225,19 +219,6 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <!-- dubbo -->
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-bom</artifactId>
-                <version>${dubbo.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.protobuf</groupId>
-                <artifactId>protobuf-java</artifactId>
-                <version>${jar.protobuf}</version>
             </dependency>
             <!-- framework-test的依赖 -->
             <dependency>
@@ -272,9 +253,9 @@
                 <version>${jar.okio}</version>
             </dependency>
             <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>${jar.gson}</version>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${jar.fastjson2}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.inject</groupId>
@@ -434,10 +415,6 @@
                     <exclusion>
                         <groupId>org.apache.logging.log4j</groupId>
                         <artifactId>*</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.google.code.gson</groupId>
-                        <artifactId>gson</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -789,7 +766,7 @@
                 <groupId>org.apache.flink</groupId>
                 <artifactId>flink-connector-kafka</artifactId>
 <!--                TODO update-->
-                <version>1.17.1</version>
+                <version>3.1.0-1.18</version>
             </dependency>
             <!-- hadoop -->
             <dependency>
@@ -1540,7 +1517,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <!--
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-datasource-nacos</artifactId>
@@ -1550,9 +1526,12 @@
                         <groupId>commons-io</groupId>
                         <artifactId>*</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>com.alibaba.nacos</groupId>
+                        <artifactId>nacos-client</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
-            -->
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <!-- 热点参数限流  -->
@@ -1563,6 +1542,68 @@
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-apache-dubbo3-adapter</artifactId>
                 <version>${jar.sentinel}</version>
+            </dependency>
+            <!-- nacos -->
+            <dependency>
+                <groupId>org.bf.framework</groupId>
+                <artifactId>bf-framework-starter-nacos</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-spring-context</artifactId>
+                <version>2.1.0-RC</version>
+            </dependency>
+
+            <!-- rocketmq -->
+            <dependency>
+                <groupId>org.bf.framework</groupId>
+                <artifactId>bf-framework-starter-rocketmq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot</artifactId>
+                <version>2.2.3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.bf.framework</groupId>
+                <artifactId>bf-framework-starter-pay</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-pay</artifactId>
+                <version>4.6.1.B</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>commons-io</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.github.binarywang</groupId>
+                <artifactId>weixin-java-mp</artifactId>
+                <version>4.6.1.B</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sdk</groupId>
+                <artifactId>alipay-sdk-java</artifactId>
+                <version>4.39.2.ALL</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>fastjson</artifactId>
+                        <groupId>com.alibaba</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.paypal.sdk</groupId>
+                <artifactId>checkout-sdk</artifactId>
+                <version>2.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>

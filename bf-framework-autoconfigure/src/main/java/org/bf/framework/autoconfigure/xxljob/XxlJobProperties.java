@@ -1,8 +1,9 @@
 package org.bf.framework.autoconfigure.xxljob;
 
+import org.bf.framework.boot.constant.MiddlewareConst;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "bf.xxl")
+@ConfigurationProperties(prefix = MiddlewareConst.PREFIX_XXL)
 public class XxlJobProperties {
 
     private String accessToken;

@@ -1,4 +1,6 @@
 package org.bf.framework.autoconfigure.vms;
+
+import com.alibaba.fastjson2.JSON;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.profile.ClientProfile;
 import com.tencentcloudapi.common.profile.HttpProfile;
@@ -8,7 +10,6 @@ import com.tencentcloudapi.vms.v20200902.models.SendTtsVoiceResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.boot.support.vms.VmsProperties;
 import org.bf.framework.boot.support.vms.VmsProxy;
-import org.bf.framework.common.util.JSON;
 
 /**
  *         //后台模版配置,例如

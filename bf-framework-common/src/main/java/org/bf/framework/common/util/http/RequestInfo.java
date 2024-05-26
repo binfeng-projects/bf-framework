@@ -1,13 +1,14 @@
 package org.bf.framework.common.util.http;
 
+import com.alibaba.fastjson2.JSON;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import org.bf.framework.common.util.IOUtils;
-import org.bf.framework.common.util.JSON;
-import org.bf.framework.common.util.StringUtils;
 import org.bf.framework.common.util.MapUtils;
+import org.bf.framework.common.util.StringUtils;
+import org.bf.framework.common.util.XmlUtils;
 
 import java.io.File;
 import java.io.InputStream;
@@ -128,7 +129,7 @@ public class RequestInfo implements Serializable {
                 info.param = jsonStr;
             }else if(type.equals(ContentType.XML)){
 //      XML方式提交构建
-                String xmlStr = body instanceof String ? (String)body : JSON.beanToXml(body);
+                String xmlStr = body instanceof String ? (String)body : XmlUtils.beanToXml(body);
                 b = RequestBody.create(type.getType(),xmlStr);
                 info.param = xmlStr;
             }else if(type.equals(ContentType.FORM)){

@@ -1,5 +1,6 @@
 package org.bf.framework.autoconfigure.vms;
 
+import com.alibaba.fastjson2.JSON;
 import com.aliyun.dyvmsapi20170525.Client;
 import com.aliyun.dyvmsapi20170525.models.SingleCallByTtsRequest;
 import com.aliyun.dyvmsapi20170525.models.SingleCallByTtsResponse;
@@ -7,7 +8,6 @@ import com.aliyun.teaopenapi.models.Config;
 import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.boot.support.vms.VmsProperties;
 import org.bf.framework.boot.support.vms.VmsProxy;
-import org.bf.framework.common.util.JSON;
 import org.bf.framework.common.util.StringUtils;
 
 /**

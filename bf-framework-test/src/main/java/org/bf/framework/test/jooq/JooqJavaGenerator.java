@@ -47,8 +47,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.bf.framework.boot.constant.FrameworkConst.BF;
-import static org.bf.framework.boot.constant.FrameworkConst.DOT;
 import static org.bf.framework.boot.constant.MiddlewareConst.BEAN_ELASTICSEARCHTEMPLATE;
 import static org.bf.framework.boot.constant.MiddlewareConst.BEAN_SQLSESSIONFACTORY;
 import static org.bf.framework.test.codegen.CodeGenTool.*;
@@ -256,7 +254,7 @@ public class JooqJavaGenerator extends JavaGenerator {
         Map<String, Object> modelMap = MapUtils.newHashMap();
         modelMap.put("corePackage", CodeGenTool.CFG.getPackageCore());
         modelMap.put("currentPackage", CodeGenTool.CFG.getPackageCore() + "." + subDir);
-        modelMap.put("middlewarePrefix", BF + DOT + currentMiddlewareType);
+        modelMap.put("middlewarePrefix", currentMiddlewareType);
         modelMap.put("middlewareType", currentMiddlewareType);
         modelMap.put("schemas", schemaModelMap.values());
         return modelMap;
@@ -284,7 +282,8 @@ public class JooqJavaGenerator extends JavaGenerator {
 //        String dir = getTargetDirectory();
 //        String pkg =getStrategy().getJavaPackageName(definition, mode).replaceAll("\\.", "/");
 //        return new File(dir + "/" + pkg, getStrategy().getFileName(definition, mode));
-        String dir = getTargetDirectory();
+//        String dir = getTargetDirectory();
+        String dir = getTargetDirectory().replace("\\", "/"); //兼容windows
         if (definition instanceof TableDefinition) {
             if (mode.name().startsWith("CLIENT_")) {
                 dir = dir.replace("-core", "-client");
