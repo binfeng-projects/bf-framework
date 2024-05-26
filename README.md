@@ -79,7 +79,7 @@ datasource:
 ```
 业务甚至都不关心地址，账户密码。我仅仅只是想要启我想要启用的实例。至于它的细节我不关心。
 
-### 对大数据hadoop生态的支持
+### 对大数据hadoop生态的支持(jdk8分支暂未适配)
 1. 本项目对大数据技术栈的支持基于[spring-hadoop](https://github.com/binfeng-projects/spring-hadoop)项目,spring官方已经放弃了对该项目
 的维护，官方一些依赖都已经无法down到本地（不是公开的maven仓库）。本人fork该项目的源码，并迭代更新，使hadoop技术栈和spring结合一起。
 所以该模块依赖需要[spring-hadoop](https://github.com/binfeng-projects/spring-hadoop)打出依赖包。关于该项目细节，具体也可移步主页了解。
@@ -88,14 +88,11 @@ datasource:
 3. 关于spring-hadoop。有两种使用方式。你依然可以clone并打出包来，按照网上还能搜到的spring-hadoop官方教程来使用。但不建议了。
 建议并欢迎使用bf-framework接入hadoop。
 
-### 关于运行环境
-1. 本项目最小依赖spring-boot3.x版本。所以需要JDK17以上。
-2. 默认依赖本人自己打包出的[spring-boot](https://github.com/binfeng-projects/spring-boot)（切换成任意官方3.x以上都是兼容的）
-3. 另外所有本人维护的项目maven都会继承[bf-pom](https://github.com/binfeng-projects/bf-pom)打出来的parent父pom
-4. 这里说明下，国内可能主流还是JDK1.8。个人建议该升级了，当前（截止2024-01），JDK最新release都已经到21了。无论是spring还是kafka,还是其他一众大型中间件，都已经
-   明确开始放弃1.8了。所以，it is time! 咱还是升级吧，不能落后了。
+### 关于运行环境(jdk8分支spring-boot2)
+1. spring-boot版本 2.7.18
+2. 另外所有本人维护的项目maven都会继承[bf-pom](https://github.com/binfeng-projects/bf-pom)打出来的parent父pom
 
-### 对flink的支持
+### 对flink的支持(jdk8分支暂未适配)
 因为spring-boot3最小需要JDK17。而截止当前（2024-01），flink最新release版本（1.18）仍未支持，但是最新的master分支源码已经支持，
 所以在1.19发版的时候，就会支持。当前本工程是用[flink源码](https://github.com/binfeng-projects/flink)master分支打出来的依赖
 （后续等官方release了，直接改个版本号就行了），亲测兼容JDK17
@@ -114,10 +111,6 @@ excel处理啦，加解密啦什么的。试试看这个hutool这个吧。除了
 
 -------------------------------------------------------------------------------
 ## 📝文档 (待详细补充)
-抱歉，可能暂时就没时间详细出了。个人建议 不是初学者的直接看源码吧（其实初学者也是建议直接看源码），程序员之间，或者程序员和开源项目之间交流的最好方式就是看源码。
-上面提到的接入bf-framework最佳实践的[middleware-integration](https://github.com/binfeng-projects/middleware-integration)工程，该项目中的单元
-测试代码可以作为example工程，看源码和example永远是了解项目最好最快的方式。顺便提一下，需要本地看spring源码又主要构建工具是maven的 可以移步本人主页。为了方便看源码和随
-时能自己本地源码打包，本人已经将spring和spring-boot工程maven化改造，欢迎clone和star
 
 ------------------------------------------------------------------------------
 
