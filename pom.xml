@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
     <properties>
         <!--自身模块 -->
-        <revision>0.0.6-SNAPSHOT</revision>
+        <revision>0.0.8-SNAPSHOT</revision>
         <java.version>1.8</java.version>
         <spring-boot.version>2.7.18</spring-boot.version>
         <jar.tomcat-el>9.0.83</jar.tomcat-el>
@@ -25,10 +25,10 @@
         <!-- framework-test的依赖 -->
         <jar.jooq>3.14.16</jar.jooq>
 
-        <jar.slf4j>2.0.7</jar.slf4j>
+        <jar.slf4j>1.7.25</jar.slf4j>
         <jar.okhttp>4.12.0</jar.okhttp>
         <jar.okio>3.6.0</jar.okio>
-        <jar.gson>2.10.1</jar.gson>
+        <jar.fastjson2>2.0.49</jar.fastjson2>
         <jar.guice>7.0.0</jar.guice>
         <jar.hutool>5.8.21</jar.hutool>
         <jar.xml>4.0.0</jar.xml>
@@ -37,7 +37,6 @@
         <!-- autoconfig的依赖 -->
         <jar.apollo>2.1.0</jar.apollo>
         <jar.xxl>2.4.0</jar.xxl>
-        <dubbo.version>3.2.6</dubbo.version>
         <jar.protobuf>3.19.6</jar.protobuf>
         <jar.curator>5.5.0</jar.curator>
         <jar.sentinel>1.8.7</jar.sentinel>
@@ -138,10 +137,6 @@
                         <groupId>org.springframework</groupId>
                         <artifactId>spring-beans</artifactId>
                     </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-messaging</artifactId>
-                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -205,11 +200,6 @@
             </dependency>
             <dependency>
                 <groupId>org.bf.framework</groupId>
-                <artifactId>bf-framework-starter-dubbo</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.bf.framework</groupId>
                 <artifactId>bf-framework-starter-actuator</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -220,19 +210,6 @@
                 <version>${spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <!-- dubbo -->
-            <dependency>
-                <groupId>org.apache.dubbo</groupId>
-                <artifactId>dubbo-bom</artifactId>
-                <version>${dubbo.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.protobuf</groupId>
-                <artifactId>protobuf-java</artifactId>
-                <version>${jar.protobuf}</version>
             </dependency>
             <!-- framework-test的依赖 -->
             <dependency>
@@ -267,9 +244,9 @@
                 <version>${jar.okio}</version>
             </dependency>
             <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>${jar.gson}</version>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${jar.fastjson2}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.inject</groupId>
@@ -429,10 +406,6 @@
                     <exclusion>
                         <groupId>org.apache.logging.log4j</groupId>
                         <artifactId>*</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.google.code.gson</groupId>
-                        <artifactId>gson</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -718,7 +691,6 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <!--
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <artifactId>sentinel-datasource-nacos</artifactId>
@@ -728,9 +700,12 @@
                         <groupId>commons-io</groupId>
                         <artifactId>*</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>com.alibaba.nacos</groupId>
+                        <artifactId>nacos-client</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
-            -->
             <dependency>
                 <groupId>com.alibaba.csp</groupId>
                 <!-- 热点参数限流  -->
@@ -742,6 +717,37 @@
                 <artifactId>sentinel-apache-dubbo3-adapter</artifactId>
                 <version>${jar.sentinel}</version>
             </dependency>
+            <!-- nacos -->
+            <dependency>
+                <groupId>org.bf.framework</groupId>
+                <artifactId>bf-framework-starter-nacos</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-spring-context</artifactId>
+                <version>2.1.0-RC</version>
+            </dependency>
+
+            <!-- rocketmq -->
+            <dependency>
+                <groupId>org.bf.framework</groupId>
+                <artifactId>bf-framework-starter-rocketmq</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot</artifactId>
+                <version>2.2.3</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.google.j2objc</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>

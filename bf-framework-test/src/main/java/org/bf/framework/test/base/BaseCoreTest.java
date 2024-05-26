@@ -1,6 +1,6 @@
 package org.bf.framework.test.base;
 
-import org.bf.framework.common.util.JSON;
+import com.alibaba.fastjson2.JSON;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

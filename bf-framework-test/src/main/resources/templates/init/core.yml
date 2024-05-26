@@ -1,9 +1,2 @@
-bf:
-  datasource:
-    enabled: '${appName}'
-  elasticsearch:
-    enabled: '${appName}'
-  mybatis:
-    enabled: true
-  sentinel:
-#    dashboard:
+datasource:
+  enabled: '${appName}'

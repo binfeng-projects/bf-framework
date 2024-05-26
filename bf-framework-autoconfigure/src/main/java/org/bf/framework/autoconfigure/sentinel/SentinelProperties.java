@@ -2,7 +2,9 @@ package org.bf.framework.autoconfigure.sentinel;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "bf.sentinel")
+import static org.bf.framework.boot.constant.MiddlewareConst.PREFIX_SENTINEL;
+
+@ConfigurationProperties(prefix = PREFIX_SENTINEL)
 public class SentinelProperties {
     private String dataSourceType;
     private String dataSourceRef;

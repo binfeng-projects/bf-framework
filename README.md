@@ -53,29 +53,29 @@
 很多调优配置有默认值自动继承，当然也支持业务覆盖(配合Apollo等配置中心，可以实现非常灵活，多优先级的覆盖规则,业务代码不再写死，
 配置复杂度又如同单实例。）支持集群维度的扩展。 一个示例配置如下:
 ```yaml
-bf: #配置了三个数据源，启用其中两个
-    datasource:
-        enabled: 'order-center,pay-center'
-        order-center:
-            url: jdbc:mysql://127.0.0.1:3306/order_center?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&rewriteBatchedStatements=true
-            username: root
-            password: 111111
-        pay-center:
-            url: jdbc:mysql://127.0.0.1:3306/pay_center?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&rewriteBatchedStatements=true
-            username: root
-            password: 111111
-        test-db:
-            url: jdbc:mysql://127.0.0.1:3306/test-db?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&rewriteBatchedStatements=true
-            username: root
-            password: 111111
+#配置了三个数据源，启用其中两个
+datasource:
+    enabled: 'order-center,pay-center'
+    order-center:
+        url: jdbc:mysql://127.0.0.1:3306/order_center?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&rewriteBatchedStatements=true
+        username: root
+        password: 111111
+    pay-center:
+        url: jdbc:mysql://127.0.0.1:3306/pay_center?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&rewriteBatchedStatements=true
+        username: root
+        password: 111111
+    test-db:
+        url: jdbc:mysql://127.0.0.1:3306/test-db?useUnicode=true&characterEncoding=utf-8&autoReconnect=true&rewriteBatchedStatements=true
+        username: root
+        password: 111111
 ```
 甚至可以进一步简化。最佳实践是，业务不要直接对接bf-framework。中间件团队再抽一个工程来（可参考[middleware-integration](https://github.com/binfeng-projects/middleware-integration)）对接bf-framework。
 middleware-integration可配置全公司常用的所有中间件。其他业务项目都依赖middleware-integration即可。那么业务最极致简单的情况下，只需要一行配置，如下：
 
 ```yaml
-bf: #配置了三个数据源，启用其中两个
-    datasource:
-        enabled: 'order-center,pay-center'
+#配置了三个数据源，启用其中两个
+datasource:
+    enabled: 'order-center,pay-center'
 ```
 业务甚至都不关心地址，账户密码。我仅仅只是想要启我想要启用的实例。至于它的细节我不关心。
 

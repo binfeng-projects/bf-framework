@@ -36,12 +36,14 @@ import org.springframework.data.redis.connection.lettuce.LettuceClientConfigurat
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
 import java.time.Duration;
@@ -96,6 +98,9 @@ public class RedisAutoConfig implements EnableConfigHandler<RedisProperties> {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate(connFac);
         result.add(new Middleware().setPrefix(PREFIX).setSchemaName(schema).setType(StringRedisTemplate.class).setBean(stringRedisTemplate));
 
+        RedisTemplate<Object, Object> template = getObjectRedisTemplate(connFac);
+        result.add(new Middleware().setPrefix(PREFIX).setSchemaName(schema).setType(RedisTemplate.class).setBean(template));
+
         //cacheManager配置
         RedisCacheManager.RedisCacheManagerBuilder builder = RedisCacheManager.RedisCacheManagerBuilder.fromConnectionFactory(connFac);
         //本地缓存配置了5分钟，一小时等不同时间的缓存策略，redis也遵循同样配置一份redis版本的策略
@@ -146,6 +151,19 @@ public class RedisAutoConfig implements EnableConfigHandler<RedisProperties> {
         }
         return result;
     }
+
+    private static RedisTemplate<Object, Object> getObjectRedisTemplate(RedisConnectionFactory connFac) {
+        RedisTemplate<Object, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connFac);
+        FastJson2JsonRedisSerializer<Object> fastSerializer = new FastJson2JsonRedisSerializer<Object>(Object.class);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(fastSerializer);
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(fastSerializer);
+        template.afterPropertiesSet();
+        return template;
+    }
+
     //--------------------------redisson----------------------------------
     private static String redissonAddress(String host,int port){
         return "redis://" + host + ":" + port ;

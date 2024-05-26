@@ -17,6 +17,14 @@
             <artifactId>bf-framework-starter-zookeeper</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.bf.framework</groupId>
+            <artifactId>bf-framework-starter-nacos</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bf.framework</groupId>
+            <artifactId>bf-framework-starter-apollo</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-core</artifactId>
         </dependency>
@@ -35,12 +43,10 @@
             <!-- Apollo数据源-->
             <artifactId>sentinel-datasource-apollo</artifactId>
         </dependency>
-        <!--
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-datasource-nacos</artifactId>
         </dependency>
-        -->
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-datasource-redis</artifactId>

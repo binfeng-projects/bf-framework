@@ -14,6 +14,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -82,10 +83,23 @@ public class JdbcAutoConfig implements EnableConfigHandler<DataSource> {
         return result;
     }
 
+//    @Configuration(proxyBeanMethods = false)
+//    @EnableTransactionManagement
+//    static class EnableConfiguration {
+//
+//    }
+
     @Configuration(proxyBeanMethods = false)
-    @EnableTransactionManagement
-    static class EnableConfiguration {
+    @EnableTransactionManagement(proxyTargetClass = false)
+    @ConditionalOnProperty(prefix = "spring.aop", name = "proxy-target-class", havingValue = "false")
+    public static class JdkDynamicAutoProxyConfiguration {
 
     }
 
+    @Configuration(proxyBeanMethods = false)
+    @EnableTransactionManagement(proxyTargetClass = true)
+    @ConditionalOnProperty(prefix = "spring.aop", name = "proxy-target-class", havingValue = "true", matchIfMissing = true)
+    public static class CglibAutoProxyConfiguration {
+
+    }
 }

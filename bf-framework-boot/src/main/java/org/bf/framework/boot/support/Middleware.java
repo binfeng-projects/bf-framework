@@ -27,7 +27,6 @@ public class Middleware {
             }
             //bean的名称是有一定规范的，外界可按命名规范注入bean
             String beanName = m.getPrefix() + DOT + m.getSchemaName() + "_" + m.getType().getSimpleName();
-            //注册DataSource到spring
             SpringUtil.registrySingleton(beanName,m.getBean());
         }
         List<Middleware> result = ALL_MIDDLEWARE.getOrDefault(prefixAndSchema,CollectionUtils.newArrayList());

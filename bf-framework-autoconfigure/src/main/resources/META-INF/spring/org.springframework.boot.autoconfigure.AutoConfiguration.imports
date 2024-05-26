@@ -11,4 +11,6 @@ org.bf.framework.autoconfigure.vms.VmsAutoConfig
 org.bf.framework.autoconfigure.zookeeper.ZookeeperAutoConfig
 org.bf.framework.autoconfigure.actuator.ActuatorAutoConfig
 org.bf.framework.autoconfigure.sentinel.SentinelAutoConfig
+org.bf.framework.autoconfigure.nacos.NacosAutoConfig
+org.bf.framework.autoconfigure.rocketmq.RocketMQAutoConfig
 org.bf.framework.autoconfigure.FrameworkAutoConfig

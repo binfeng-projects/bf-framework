@@ -1,11 +1,11 @@
 package org.bf.framework.autoconfigure.actuator;
 
 import cn.hutool.core.net.NetUtil;
+import com.alibaba.fastjson2.JSON;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.config.MeterFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.bf.framework.boot.util.SpringUtil;
-import org.bf.framework.common.util.JSON;
 import org.bf.framework.common.util.MapUtils;
 import org.bf.framework.common.util.StringUtils;
 import org.bf.framework.common.util.http.HttpUtil;
@@ -25,7 +25,7 @@ import java.util.*;
 @Slf4j
 public class ActuatorAutoConfig {
     public static final String LOCAL_IP = NetUtil.getLocalhostStr();
-    public static final String CONSUL_ADDR_KEY = "bf.consul.host";
+    public static final String CONSUL_ADDR_KEY = "consul.host";
     @Bean
     public MeterFilter meterFilter() {
         return MeterFilter.commonTags(Arrays.asList(

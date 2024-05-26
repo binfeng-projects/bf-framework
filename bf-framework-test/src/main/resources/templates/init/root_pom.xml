@@ -48,8 +48,10 @@
             </dependency>
             <dependency>
                 <groupId>org.bf.framework</groupId>
-                <artifactId>bf-framework-test</artifactId>
+                <artifactId>bf-framework</artifactId>
                 [#noparse]<version>${bf-framework.version}</version>[/#noparse]
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

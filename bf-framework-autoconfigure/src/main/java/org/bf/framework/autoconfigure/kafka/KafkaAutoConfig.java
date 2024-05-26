@@ -13,6 +13,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.boot.context.properties.PropertyMapper;
 import org.springframework.context.annotation.Configuration;
@@ -28,11 +29,12 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-import static org.bf.framework.boot.constant.MiddlewareConst.PREFIX_KAFKA;
+import static org.bf.framework.boot.constant.MiddlewareConst.*;
 
 @AutoConfiguration
 @ConditionalOnClass(KafkaTemplate.class)
 @ConditionalOnMissingBean(value = KafkaAutoConfig.class)
+@ConditionalOnProperty(prefix = PREFIX_KAFKA, value = ENABLED, matchIfMissing = true)
 @EnableConfig(KafkaAutoConfig.class)
 @Slf4j
 public class KafkaAutoConfig implements EnableConfigHandler<KafkaProperties> {

@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.util.*;
 
-import static org.bf.framework.boot.constant.FrameworkConst.BF;
 import static org.bf.framework.boot.constant.FrameworkConst.DOT;
 import static org.bf.framework.boot.constant.MiddlewareConst.*;
 
@@ -59,6 +58,7 @@ public class CodeGenTool extends JavaGenerator {
         if (org.jooq.tools.StringUtils.isBlank(middlewareArtifactId)) {
             middlewareArtifactId = "binfeng-middleware";
         }
+        model.put("workspace",workspace);
         model.put("middlewareGroupId",middlewareGroupId);
         model.put("middlewareArtifactId",middlewareArtifactId);
         model.put("corePackage",corePackage);
@@ -79,6 +79,8 @@ public class CodeGenTool extends JavaGenerator {
         IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_constant.java",model),corePath + "/src/main/java/" + corePackage.replace(".","/"), "Constant.java");
         IOUtils.writeFile(freemarkerUtil.renderTemplate("init/spring.factories",model),corePath + "/src/main/resources/META-INF","spring.factories");
         IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core.yml",model),corePath + "/src/main/resources", appName + "-core.yml");
+        model.put("env","local");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_env.yml",model),corePath + "/src/main/resources", appName + "-core-local.yml");
         model.put("env","dev");
         IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_env.yml",model),corePath + "/src/main/resources", appName + "-core-dev.yml");
         model.put("env","test");
@@ -88,7 +90,7 @@ public class CodeGenTool extends JavaGenerator {
         model.put("env","prod");
         IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_env.yml",model),corePath + "/src/main/resources", appName + "-core-prod.yml");
         IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_test_application.yml",model),corePath + "/src/test/resources", "application.yml");
-        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_test_gencode.java",model),corePath + "/src/test/java/" + corePackage.replace(".","/") + "/test", "TestGenCode.java");
+        IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_test_gencode.java",model),corePath + "/src/test/java/" + corePackage.replace(".","/") + "/test", "SpringTest.java");
         IOUtils.writeFile(freemarkerUtil.renderTemplate("init/core_test_simplejunit.java",model),corePath + "/src/test/java/" + corePackage.replace(".","/"), "SimpleJunitTest.java");
 
         //server
@@ -130,7 +132,7 @@ public class CodeGenTool extends JavaGenerator {
     private static Map<String,StringBuffer> bufferContext = MapUtils.newHashMap();
     private static Set<Class<?>> clsContext = CollectionUtils.newHashSet();
 
-    public void geneCode(){
+    public void geneMiddleWareHolder(){
         String pkg = CFG.getPackageCore().replaceAll("\\.", "/");
         middlewareHolderOut = newJavaWriter(new File(getTargetDirectory() + "/" + pkg + "/" + MIDDLEWARE_DIR, MIDDLEWARE_HOLDER + ".java"));
         //根据所有使用的中间件生成代码
@@ -291,7 +293,7 @@ public class CodeGenTool extends JavaGenerator {
                 packageName = packageName + "not_exists";
             }
 //            Configuration cfg = JAXB.unmarshal(file.getInputStream(), Configuration.class);
-            Configuration cfg = JSON.xmlToBean(new InputStreamReader(file.getInputStream()),Configuration.class);
+            Configuration cfg = XmlUtils.xmlToBean(new InputStreamReader(file.getInputStream()),Configuration.class);
             cfg.getGenerator().withName(generateClass.getName()).getStrategy().withName(STRATEGY_NAME);
             cfg.getJdbc().withDriver(MYSQL_DRIVER).withUrl(jdbcUrl)
                     .withUser(userName).withPassword(password);
@@ -311,7 +313,8 @@ public class CodeGenTool extends JavaGenerator {
         }
     }
     private static String getMiddleTypeWithPrefix(String middlewarePrefix){
-        return middlewarePrefix.substring((BF + DOT).length());
+//        return middlewarePrefix.substring((BF + DOT).length());
+        return middlewarePrefix;
     }
 //    private final Patterns patterns = new Patterns();
 //    public final List<String> filterExcludeInclude(List<String> definitions,String e,String i) {

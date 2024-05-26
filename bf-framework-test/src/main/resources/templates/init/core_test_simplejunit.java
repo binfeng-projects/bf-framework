@@ -16,7 +16,6 @@ public class SimpleJunitTest {
     //代码脚手架，生成一个空工程，类似SpringBootInitializer
     @Test
     public void initProject(){
-        CodeGenTool.initProject("/Users/bf/tech/workspace","${appName}","${corePackage}",null,null);
-//        CodeGenTool.initProject("/Users/bf/tech/workspace","bf-pay","com.bf.pay.core","com.bf.middleware","binfeng-middleware");
+        CodeGenTool.initProject("${workspace}","${appName}","${corePackage}","${middlewareGroupId}","${middlewareArtifactId}");
     }
 }
